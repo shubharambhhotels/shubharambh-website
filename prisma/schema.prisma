@@ -1,0 +1,87 @@
+// prisma/schema.prisma
+// Run: npx prisma generate && npx prisma db push
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  SUPER_ADMIN
+}
+
+model Room {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  type        RoomType
+  pricePerNight Int
+  maxOccupancy Int
+  sizeSqFt    Int?
+  description String?
+  amenities   String[]
+  images      String[]  // array of image paths
+  isActive    Boolean   @default(true)
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum RoomType {
+  DELUXE
+  SUITE
+  FAMILY
+  SUPER_DELUXE
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  bookingRef    String        @unique @default(cuid())
+  room          Room          @relation(fields: [roomId], references: [id])
+  roomId        String
+  guestName     String
+  guestEmail    String
+  guestPhone    String
+  checkIn       DateTime
+  checkOut      DateTime
+  numGuests     Int
+  totalAmount   Int           // in paise (INR × 100)
+  status        BookingStatus @default(PENDING)
+  paymentId     String?       // Razorpay payment ID
+  razorpayOrderId String?
+  specialRequests String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Enquiry {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  purpose   String
+  travelDate DateTime?
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

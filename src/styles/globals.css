@@ -1,0 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Hind:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --saffron:        #A44A1E;
+  --saffron-light:  #C9652D;
+  --saffron-pale:   #F0DDD0;
+  --forest:         #234232;
+  --forest-light:   #2E5541;
+  --forest-dark:    #162A20;
+  --ivory:          #F7F3EA;
+  --ivory-dark:     #EDE8DC;
+  --stone:          #C9B8A5;
+  --stone-light:    #E8DDD0;
+  --stone-dark:     #9A8878;
+  --gold:           #C9A227;
+  --gold-light:     #E8C84A;
+  --gold-pale:      #F5EAC8;
+  --charcoal:       #1F1F1F;
+  --charcoal-mid:   #3A3530;
+  --text-muted:     #7A6E65;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Hind', sans-serif;
+  background-color: var(--ivory);
+  color: var(--charcoal);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Playfair Display', serif;
+}
+
+/* ── Utility classes ── */
+.font-playfair { font-family: 'Playfair Display', serif; }
+.font-hind     { font-family: 'Hind', sans-serif; }
+
+/* ── Image placeholder ── */
+.img-placeholder {
+  background-color: var(--stone-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--stone-dark);
+  font-family: 'Hind', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Section eyebrow ── */
+.eyebrow {
+  font-family: 'Hind', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--saffron);
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+/* ── Gold divider ── */
+.divider {
+  width: 40px;
+  height: 2px;
+  background-color: var(--gold);
+  margin: 1.25rem 0;
+}
+.divider-center { margin-left: auto; margin-right: auto; }
+
+/* ── Buttons ── */
+.btn-primary {
+  background-color: var(--saffron);
+  color: #fff;
+  border: none;
+  padding: 13px 28px;
+  font-family: 'Hind', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-block;
+  text-decoration: none;
+}
+.btn-primary:hover { background-color: var(--saffron-light); }
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--forest);
+  border: 1.5px solid var(--forest);
+  padding: 12px 28px;
+  font-family: 'Hind', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  display: inline-block;
+  text-decoration: none;
+}
+.btn-secondary:hover {
+  background-color: var(--forest);
+  color: #fff;
+}
+
+.btn-white {
+  background-color: #fff;
+  color: var(--charcoal);
+  border: none;
+  padding: 13px 28px;
+  font-family: 'Hind', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-block;
+  text-decoration: none;
+}
+.btn-white:hover { background-color: var(--ivory-dark); }
+
+/* ── Cards ── */
+.card {
+  background-color: #fff;
+  border: 1px solid var(--stone-light);
+}
+
+/* ── Scroll reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Form inputs ── */
+input, select, textarea {
+  font-family: 'Hind', sans-serif;
+  font-size: 14px;
+}
