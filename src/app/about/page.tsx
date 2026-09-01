@@ -155,15 +155,20 @@ export default function AboutPage() {
             </div>
 
             <div className="mt-6 border-t border-stone-light pt-6">
-              <p className="font-hind text-[10px] uppercase tracking-widest text-text-muted mb-3">
+              <p className="font-hind text-[10px] font-semibold uppercase tracking-widest text-red-600 mb-3">
                 Authorised Distributor For
               </p>
-              <div className="flex flex-wrap gap-2">
-                {["Dabur", "Patanjali", "Parle", "Tata", "Haldiram", "Godrej", "Amul", "Savour"].map((brand) => (
-                  <span key={brand} className="font-hind text-[11px] border border-stone-light bg-ivory px-2.5 py-1 text-charcoal-mid">
-                    {brand}
-                  </span>
-                ))}
+              <div className="flex flex-wrap gap-0 border border-stone-light overflow-hidden mt-1">
+  {["Dabur", "Patanjali", "Parle", "Tata", "Haldiram", "Godrej", "Amul", "Savour"].map((brand, i) => (
+    <span
+      key={brand}
+      className={`font-hind text-[11px] font-semibold tracking-wide px-3 py-2 text-white ${
+        i % 2 === 0 ? "bg-forest" : "bg-forest-light"
+      }`}
+    >
+      {brand}
+    </span>
+  ))}
               </div>
             </div>
 

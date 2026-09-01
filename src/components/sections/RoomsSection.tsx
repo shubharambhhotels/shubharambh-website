@@ -1,6 +1,7 @@
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
 import Link from "next/link";
+import Image from "next/image"; 
 import { Wifi, Droplets, Tv, Car, UtensilsCrossed, Eye, ArrowRight } from "lucide-react";
 
 const rooms = [
@@ -14,7 +15,7 @@ const rooms = [
     badgeColor: "bg-saffron",
     desc: "Spacious room with a private balcony overlooking the Himalayan ridgeline and Pithoragarh valley.",
     amenities: ["Mountain View", "King Bed", "Free WiFi", "Hot Water", "Room Service"],
-    image: "/images/rooms/deluxe.jpg",
+    image: "/images/rooms/deluxe2.jpg",
   },
   {
     id: "super-deluxe",
@@ -26,7 +27,7 @@ const rooms = [
     badgeColor: "",
     desc: "Contemporary room with garden and valley views, premium linens, and all modern amenities.",
     amenities: ["Garden View", "Queen Bed", "Smart TV", "Free WiFi", "Hot Water"],
-    image: "/images/rooms/super-deluxe.jpg",
+    image: "/images/rooms/super-deluxe1.jpg",
   },
   {
     id: "executive",
@@ -38,7 +39,7 @@ const rooms = [
     badgeColor: "bg-forest",
     desc: "Premium room with AC, private balcony, panoramic snow-peak views, and a separate living area.",
     amenities: ["Panoramic View", "Private Balcony", "AC", "Smart TV", "Safe/Locker"],
-    image: "/images/rooms/executive.jpg",
+    image: "/images/rooms/executive2.jpg",
   },
   {
     id: "family-suite",
@@ -50,7 +51,7 @@ const rooms = [
     badgeColor: "bg-gold",
     desc: "Spacious suite with living area, AC, private balcony, and mountain-facing windows — ideal for families.",
     amenities: ["Living Area", "AC", "Balcony", "Smart TV", "Safe/Locker"],
-    image: "/images/rooms/family-suite.jpg",
+    image: "/images/rooms/family-suite1.jpg",
   },
 ];
 
@@ -87,15 +88,16 @@ export default function RoomsSection() {
           >
             {/* Image */}
             <div className="relative overflow-hidden">
-              <ImagePlaceholder
-                label={room.name}
-                aspectRatio="aspect-video"
-                className="group-hover:scale-105 transition-transform duration-500"
-              />
-              {/*
-                Replace with:
-                <Image src={room.image} alt={room.name} width={640} height={360} className="object-cover w-full" />
-              */}
+              <div className="aspect-video overflow-hidden">
+    <Image
+      src={room.image}
+      alt={room.name}
+      width={640}
+      height={360}
+      className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+    />
+  </div>
+  
               {room.badge && (
                 <span className={`absolute top-4 right-4 ${room.badgeColor} text-white text-[10px] font-semibold tracking-[0.12em] uppercase px-3 py-1`}>
                   {room.badge}
@@ -153,6 +155,35 @@ export default function RoomsSection() {
           View All Rooms & Rates
         </Link>
       </div>
+      {/* OTA Booking Links */}
+<div className="mt-12 border border-stone-light bg-white p-6">
+  <p className="font-hind text-[11px] uppercase tracking-widest text-text-muted text-center mb-5">
+    Also Available On
+  </p>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    {[
+      { name: "MakeMyTrip", color: "bg-[#E8F5E9] text-[#1a7a4a] border-[#1a7a4a]/20", href: "#" },
+      { name: "Goibibo", color: "bg-[#FFF3E0] text-[#e65c00] border-[#e65c00]/20", href: "#" },
+      { name: "Booking.com", color: "bg-[#E3F2FD] text-[#003580] border-[#003580]/20", href: "#" },
+    ].map((ota) => (
+      <a
+        key={ota.name}
+        href={ota.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`flex items-center gap-2 border px-6 py-3 font-hind font-semibold text-sm tracking-wide hover:opacity-80 transition-opacity ${ota.color}`}
+      >
+        {ota.name}
+        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M3 8h10M9 4l4 4-4 4" />
+        </svg>
+      </a>
+    ))}
+  </div>
+  <p className="font-hind text-[11px] text-text-muted text-center mt-4">
+    For best rates, book directly with us.
+  </p>
+</div>
     </SectionWrapper>
   );
 }

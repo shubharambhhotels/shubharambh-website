@@ -8,66 +8,66 @@ const destinations = [
   {
     id: "adi-kailash",
     name: "Adi Kailash",
-    tag: "Spiritual · 5–7 Days",
+    tag: "Spiritual · ~175km · 5–6 hrs",
     desc: "The Chhota Kailash pilgrimage — Shiva's Himalayan abode in the Kumaon.",
     season: "May – October",
-    image: "/images/adi-kailash.jpeg", // REPLACE
+    image: "/images/adi-kailash.jpeg",
   },
   {
     id: "mansarovar",
     name: "Kailash Mansarovar",
-    tag: "Pilgrimage · 18 Days",
+    tag: "Pilgrimage · ~175km to Dharchula",
     desc: "The ultimate sacred circumambulation around Mount Kailash via Tibet.",
     season: "June – September",
-    image: "/images/mansarovar.jpg", // REPLACE
+    image: "/images/mansarovar.jpg",
   },
   {
     id: "patal-bhuvaneshwar",
     name: "Patal Bhuvaneshwar",
-    tag: "Cave Temple · Day Trip",
+    tag: "Cave Temple · ~91km · 3 hrs",
     desc: "Mystical underground limestone cave temple of Lord Shiva near Gangolihat.",
     season: "Year Round",
-    image: "/images/patal-bhuvaneshwar.jpg", // REPLACE
+    image: "/images/patal-bhuvaneshwar.jpg",
   },
   {
     id: "munsyari",
     name: "Munsyari",
-    tag: "Trek · 5–7 Days",
+    tag: "Trek · ~127km · 4–5 hrs",
     desc: "Gateway to Milam Glacier and commanding views of the Panchachuli massif.",
     season: "March – June, Sept – Nov",
-    image: "/images/munsyari.png", // REPLACE
+    image: "/images/munsyari.png",
   },
   {
     id: "dhwaj-temple",
     name: "Dhwaj Temple",
-    tag: "Temple · Day Trip",
+    tag: "Temple · ~12km · 30 mins",
     desc: "Ancient Shakti shrine atop a ridge offering sweeping valley panoramas.",
     season: "Year Round",
-    image: "/images/dhwaj.jpeg", // REPLACE
+    image: "/images/dhwaj.jpeg",
   },
   {
     id: "kapileshwar",
     name: "Kapileshwar Cave",
-    tag: "Heritage · Day Trip",
+    tag: "Heritage · ~3km · 10 mins",
     desc: "Sacred Shiva cave temple set in limestone, near the heart of Pithoragarh.",
     season: "Year Round",
-    image: "/images/kapileshwar.jpg", // REPLACE
+    image: "/images/kapileshwar.jpg",
   },
   {
     id: "panchachuli",
     name: "Panchachuli Base",
-    tag: "Trek · 8–10 Days",
+    tag: "Trek · ~127km via Munsyari",
     desc: "Five sacred peaks forming the Pandavas' legendary kitchen fire in Darma valley.",
     season: "May – October",
-    image: "/images/panchachuli.jpeg", // REPLACE
+    image: "/images/panchachuli.jpeg",
   },
   {
     id: "chandak",
     name: "Chandak Hill",
-    tag: "Scenic · Day Trip",
+    tag: "Scenic · ~8km · 20 mins",
     desc: "Panoramic Himalayan viewpoint overlooking the entire Pithoragarh valley.",
     season: "Year Round",
-    image: "/images/chandak.jpg", // REPLACE
+    image: "/images/chandak.jpg",
   },
 ];
 

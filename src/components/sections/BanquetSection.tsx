@@ -10,7 +10,7 @@ const features = [
 ];
 
 const stats = [
-  { value: "500+", label: "Guest Capacity" },
+  { value: "600+", label: "Guest Capacity" },
   { value: "2025", label: "Established" },
   { value: "3", label: "Packages" },
 ];

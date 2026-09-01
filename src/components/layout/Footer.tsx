@@ -108,15 +108,21 @@ export default function Footer() {
             <div className="mt-6">
               <p className="text-[10px] uppercase tracking-[0.18em] text-stone mb-3">Follow Along</p>
               <div className="flex gap-3">
-                {["Facebook", "Instagram", "YouTube"].map((s) => (
+                {[
+                  { name: "Facebook", href: "https://www.facebook.com/61586732260917/" },
+                  { name: "Instagram", href: "https://www.instagram.com/shubharambhhall.in" },
+                  { name: "YouTube", href: "https://youtube.com/@shubharambhhotels" },
+                ].map((s) => (
                   <a
-                    key={s}
-                    href="#"
+                    key={s.name}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-[11px] text-charcoal-light hover:text-gold transition-colors border border-white/10 px-3 py-1.5 hover:border-gold/40"
                   >
-                    {s}
-                  </a>
-                ))}
+                    {s.name}
+                    </a>
+                  ))}
               </div>
             </div>
           </div>

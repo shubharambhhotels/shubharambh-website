@@ -5,14 +5,14 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contact Shubharambh Hotel & Banquet Hall in Pithoragarh. Phone, email, WhatsApp, address, and Google Maps. Near Naini-Saini Airport.",
+    "Contact Shubharambh Hotel & Banquet Hall in Pithoragarh. Phone, email, WhatsApp, address, and Google Maps. 500 m from Naini-Saini Airport.",
 };
 
 const contactInfo = [
   {
     icon: <MapPin size={18} />,
     label: "Address",
-    value: "Near Royal Cinema, Airport Line, Village – Makholigaon,Pithoragarh, Uttarakhand – 262501",
+    value: "500 m from Naini-Saini Airport, Airport Line, Village – Makholigaon,Pithoragarh, Uttarakhand – 262501",
   },
   {
     icon: <Phone size={18} />,
@@ -27,7 +27,7 @@ const contactInfo = [
   {
     icon: <Clock size={18} />,
     label: "Check-in / Check-out",
-    value: "Check-in: 12:00 PM\nCheck-out: 11:00 AM",
+    value: "Check-in: 1:00 PM\nCheck-out: 11:00 AM",
   },
 ];
 
@@ -85,21 +85,16 @@ export default function ContactPage() {
               </span>
             </a>
 
-            {/* Map placeholder */}
-            <div className="mt-8 border border-stone-light bg-stone-light h-48 flex items-center justify-center">
-              {/*
-                Replace with Google Maps iframe:
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1..."
-                  width="100%" height="100%" style={{border:0}} allowFullScreen loading="lazy"
-                />
-              */}
-              <div className="text-center text-text-muted">
-                <MapPin size={24} className="mx-auto mb-2 opacity-40" />
-                <p className="font-hind text-[11px] uppercase tracking-widest opacity-50">
-                  Google Maps — Replace with embed code
-                </p>
-              </div>
+            <div className="mt-8 border border-stone-light h-64 overflow-hidden">
+              <iframe
+                src="https://maps.google.com/maps?q=29.589872885453975,80.23610118077387&z=17&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Shubharambh Hotel & Banquet Hall — Pithoragarh"/>
             </div>
           </div>
 
