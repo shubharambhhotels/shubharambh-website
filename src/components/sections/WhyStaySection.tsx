@@ -3,7 +3,7 @@ import SectionWrapper from "@/components/ui/SectionWrapper";
 const features = [
   {
     title: "Near Naini-Saini Airport",
-    desc: "Minutes from the airport with commanding views of Pithoragarh Fort and the Himalayan peaks.",
+    desc: "500 metres from the airport with commanding views of Pithoragarh Fort and the Himalayan peaks.",
     icon: (
       <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M21 16l-9 5-9-5V8l9-5 9 5v8z" />
@@ -23,7 +23,7 @@ const features = [
   },
   {
     title: "Grand Banquet Hall",
-    desc: "Elegant spaces for 500+ guests — weddings, receptions, conferences, and cultural functions.",
+    desc: "Elegant spaces for 600+ guests — weddings, receptions, conferences, and cultural functions.",
     icon: (
       <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" />

@@ -17,7 +17,7 @@ const contactInfo = [
   {
     icon: <Phone size={18} />,
     label: "Phone",
-    value: "9897580016",
+    value: "9897580016, 9762622335",
   },
   {
     icon: <Mail size={18} />,
@@ -71,7 +71,7 @@ export default function ContactPage() {
 
             {/* WhatsApp CTA */}
             <a
-              href="https://wa.me/9897580016"
+              href="https://wa.me/9762622335"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 bg-[#25D366] text-white px-5 py-3.5 w-full justify-center hover:bg-[#1da851] transition-colors"

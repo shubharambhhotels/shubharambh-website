@@ -71,10 +71,10 @@ export default function EventsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="relative">
             <div className="border border-stone-light overflow-hidden aspect-[4/5] relative">
-              <Image src="/images/banquet-hall.jpeg" alt="Shubharambh Banquet Hall Interior" fill className="object-cover" />
+              <Image src="/images/banquet4.jpg" alt="Shubharambh Banquet Hall Interior" fill className="object-cover" />
             </div>
             <div className="absolute -bottom-5 -right-5 w-2/5 border-4 border-ivory overflow-hidden hidden lg:block aspect-square relative">
-              <Image src="/images/mandap.jpeg" alt="Wedding Mandap Setup" fill className="object-cover" />
+              <Image src="/images/mandap2.jpg" alt="Wedding Mandap Setup" fill className="object-cover" />
             </div>
           </div>
           <div>
@@ -197,9 +197,12 @@ export default function EventsPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
-            { src: "/images/banquet-hall.jpeg", alt: "Banquet Hall" },
-            { src: "/images/mandap.jpeg", alt: "Wedding Mandap" },
-            { src: "/images/banquet-hall2.jpeg", alt: "Banquet Setup" },
+            { src: "/images/banquet5.jpg", alt: "Banquet Hall" },
+            { src: "/images/mandap2.jpg", alt: "Wedding Mandap" },
+            { src: "/images/banquet-hall.jpeg", alt: "Banquet Setup" },
+            { src: "/images/catering1.jpg", alt: "Food section" },
+            { src: "/images/catering2.jpg", alt: "Food Hall" },
+            { src: "/images/shubharambh2.jpg", alt: "View of the Banquet Hall" },
           ].map((img) => (
             <div key={img.alt} className="relative aspect-[4/3] overflow-hidden border border-stone-light">
               <Image src={img.src} alt={img.alt} fill className="object-cover hover:scale-105 transition-transform duration-500" />

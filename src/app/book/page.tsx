@@ -18,37 +18,61 @@ export default function BookPage() {
     phone: "",
     specialRequests: "",
   });
+  const [discountCode, setDiscountCode] = useState("");
+  const [discountMsg, setDiscountMsg] = useState("");
 
   const rooms = [
-    { id: "mountain-view-deluxe", name: "Nagarkoti Deluxe", price: 3500 },
-    { id: "himalayan-suite", name: "Mountain View Suite", price: 6500 },
-    { id: "family-room", name: "Nagarkoti Executive Room", price: 4800 },
-    { id: "super-deluxe", name: " Super Deluxe Room", price: 4200 },
+    { id: "deluxe", name: "Deluxe Room", price: 4000 },
+    { id: "super-deluxe", name: "Super Deluxe Room", price: 4500 },
+    { id: "executive", name: "Executive Room", price: 5000 },
+    { id: "family-suite", name: "Family Suite", price: 7500 },
   ];
 
   const selectedRoom = rooms.find((r) => r.id === booking.room);
 
-  const handleRazorpay = async () => {
-    // TODO: Call /api/bookings/create to create order
-    // Then load Razorpay checkout SDK
-    // const res = await fetch("/api/bookings/create", { method: "POST", body: JSON.stringify(booking) });
-    // const order = await res.json();
-    // const options = {
-    //   key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-    //   amount: order.amount,
-    //   currency: "INR",
-    //   name: "Shubharambh Hotel",
-    //   description: `Booking — ${selectedRoom?.name}`,
-    //   order_id: order.id,
-    //   handler: function (response) {
-    //     // Verify on server, then redirect to /book/confirmation?id=...
-    //   },
-    // };
-    // const rzp = new (window as any).Razorpay(options);
-    // rzp.open();
-    alert("Razorpay integration: replace this stub with the SDK call above.");
-  };
+  const [checking, setChecking] = useState(false);
+const [availabilityError, setAvailabilityError] = useState("");
 
+const handleCheckAvailabilityAndPay = async () => {
+  setChecking(true);
+  setAvailabilityError("");
+
+  try {
+    const res = await fetch("/api/bookings/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        roomId: booking.room,
+        checkin: booking.checkin,
+        checkout: booking.checkout,
+        guests: booking.guests,
+        name: booking.name,
+        email: booking.email,
+        phone: booking.phone,
+        specialRequests: booking.specialRequests,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setAvailabilityError(data.error ?? "Something went wrong. Please try again.");
+      setChecking(false);
+      return;
+    }
+
+    // Booking saved — redirect to confirmation
+    window.location.href = `/book/confirmation?ref=${data.bookingRef}&room=${encodeURIComponent(selectedRoom?.name ?? booking.room)}&checkin=${booking.checkin}&checkout=${booking.checkout}&nights=${data.nights}&amount=${data.totalAmount}`;
+
+  } catch (err) {
+    setAvailabilityError("Network error. Please try again.");
+    setChecking(false);
+  }};
+  const discounts: Record<string, { type: "percent" | "flat"; value: number }> = {
+    "EARLY20": { type: "percent", value: 20 },
+    "STAY500": { type: "flat", value: 500 },
+    "DIWALI15": { type: "percent", value: 15 },
+  };
   return (
     <div className="min-h-screen bg-ivory">
       {/* Header */}
@@ -183,26 +207,168 @@ export default function BookPage() {
         )}
 
         {/* Step 3 — Payment */}
-        {step === 3 && (
-          <div className="bg-white border border-stone-light p-8">
-            <h2 className="font-playfair text-2xl text-charcoal mb-6">Review & Pay</h2>
-            <div className="border border-stone-light bg-ivory p-5 mb-6 flex flex-col gap-2">
-              <div className="flex justify-between"><span className="font-hind text-sm text-text-muted">Room</span><span className="font-hind text-sm font-semibold text-charcoal">{selectedRoom?.name}</span></div>
-              <div className="flex justify-between"><span className="font-hind text-sm text-text-muted">Check-in</span><span className="font-hind text-sm text-charcoal">{booking.checkin}</span></div>
-              <div className="flex justify-between"><span className="font-hind text-sm text-text-muted">Check-out</span><span className="font-hind text-sm text-charcoal">{booking.checkout}</span></div>
-              <div className="flex justify-between"><span className="font-hind text-sm text-text-muted">Guests</span><span className="font-hind text-sm text-charcoal">{booking.guests}</span></div>
-              <div className="border-t border-stone-light my-1" />
-              <div className="flex justify-between items-end"><span className="font-hind text-sm font-semibold text-charcoal">Total (per night)</span><span className="font-playfair text-2xl text-saffron font-semibold">₹{selectedRoom?.price.toLocaleString()}</span></div>
+{step === 3 && (
+  <div className="bg-white border border-stone-light p-8">
+    <h2 className="font-playfair text-2xl text-charcoal mb-6">Review & Pay</h2>
+
+    {/* Bill Calculation */}
+    {(() => {
+      const checkinDate = new Date(booking.checkin);
+      const checkoutDate = new Date(booking.checkout);
+      const nights = Math.ceil((checkoutDate.getTime() - checkinDate.getTime()) / (1000 * 60 * 60 * 24));
+      const pricePerNight = selectedRoom?.price ?? 0;
+      const numGuests = parseInt(booking.guests);
+      const extraPersons = numGuests > 2 ? numGuests - 2 : 0;
+      const extraPersonCharge = extraPersons * 1500;
+      const subtotal = (pricePerNight * nights) + extraPersonCharge;
+
+      // Discount
+      const discounts: Record<string, { type: "percent" | "flat"; value: number }> = {
+        "EARLY20": { type: "percent", value: 20 },
+        "STAY500": { type: "flat", value: 500 },
+        "DIWALI15": { type: "percent", value: 15 },
+      };
+      const appliedDiscount = discounts[discountCode.toUpperCase()];
+      const discountAmount = appliedDiscount
+        ? appliedDiscount.type === "percent"
+          ? Math.round(subtotal * appliedDiscount.value / 100)
+          : appliedDiscount.value
+        : 0;
+
+      const afterDiscount = subtotal - discountAmount;
+      const gstRate = pricePerNight >= 7500 ? 0.18 : 0.12;
+      const gstAmount = Math.round(afterDiscount * gstRate);
+      const total = afterDiscount + gstAmount;
+
+      return (
+        <>
+          {/* Summary */}
+          <div className="border border-stone-light bg-ivory p-5 mb-5 flex flex-col gap-2.5">
+            <div className="flex justify-between">
+              <span className="font-hind text-sm text-text-muted">Room</span>
+              <span className="font-hind text-sm font-semibold text-charcoal">{selectedRoom?.name}</span>
             </div>
-            <p className="font-hind text-xs text-text-muted mb-6 leading-relaxed">
-              Secure payment via Razorpay. Supports UPI, Cards, Net Banking, and Wallets. A confirmation email will be sent to {booking.email}.
-            </p>
-            <div className="flex gap-3">
-              <button onClick={() => setStep(2)} className="btn-secondary flex-1">Back</button>
-              <button onClick={handleRazorpay} className="btn-primary flex-1">Pay with Razorpay</button>
+            <div className="flex justify-between">
+              <span className="font-hind text-sm text-text-muted">Check-in</span>
+              <span className="font-hind text-sm text-charcoal">{booking.checkin}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-hind text-sm text-text-muted">Check-out</span>
+              <span className="font-hind text-sm text-charcoal">{booking.checkout}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-hind text-sm text-text-muted">Guests</span>
+              <span className="font-hind text-sm text-charcoal">{booking.guests}</span>
+            </div>
+
+            <div className="border-t border-stone-light my-1" />
+
+            {/* Itemized bill */}
+            <div className="flex justify-between">
+              <span className="font-hind text-sm text-text-muted">
+                Room charges (₹{pricePerNight.toLocaleString()} × {nights} night{nights > 1 ? "s" : ""})
+              </span>
+              <span className="font-hind text-sm text-charcoal">₹{(pricePerNight * nights).toLocaleString()}</span>
+            </div>
+
+            {extraPersons > 0 && (
+              <div className="flex justify-between">
+                <span className="font-hind text-sm text-text-muted">
+                  Extra person ({extraPersons} × ₹1,500)
+                </span>
+                <span className="font-hind text-sm text-charcoal">₹{extraPersonCharge.toLocaleString()}</span>
+              </div>
+            )}
+
+            {discountAmount > 0 && (
+              <div className="flex justify-between">
+                <span className="font-hind text-sm text-forest">
+                  Discount ({discountCode.toUpperCase()})
+                </span>
+                <span className="font-hind text-sm text-forest">− ₹{discountAmount.toLocaleString()}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between">
+              <span className="font-hind text-sm text-text-muted">
+                GST ({gstRate === 0.18 ? "18%" : "12%"})
+              </span>
+              <span className="font-hind text-sm text-charcoal">₹{gstAmount.toLocaleString()}</span>
+            </div>
+
+            <div className="border-t border-stone-light my-1" />
+
+            <div className="flex justify-between items-center">
+              <span className="font-hind text-sm font-bold text-charcoal">Total Payable</span>
+              <span className="font-playfair text-2xl text-saffron font-semibold">
+                ₹{total.toLocaleString()}
+              </span>
             </div>
           </div>
-        )}
+
+          {/* Discount code */}
+          <div className="mb-5">
+            <label className="block font-hind text-[10px] font-semibold uppercase tracking-widest text-text-muted mb-1.5">
+              Promo / Discount Code
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={discountCode}
+                onChange={(e) => {
+                  setDiscountCode(e.target.value);
+                  setDiscountMsg("");
+                }}
+                placeholder="Enter code"
+                className="flex-1 border border-stone bg-ivory px-3 py-2.5 text-sm text-charcoal outline-none focus:border-saffron transition-colors uppercase"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const d = discounts[discountCode.toUpperCase()];
+                  if (d) {
+                    setDiscountMsg("Discount applied successfully.");
+                  } else {
+                    setDiscountMsg("Invalid code. Please try again.");
+                  }
+                }}
+                className="btn-secondary px-5 py-2.5 text-sm"
+              >
+                Apply
+              </button>
+            </div>
+            {discountMsg && (
+              <p className={`font-hind text-xs mt-1.5 ${discountMsg.includes("Invalid") ? "text-red-500" : "text-forest"}`}>
+                {discountMsg}
+              </p>
+            )}
+          </div>
+
+          <p className="font-hind text-xs text-text-muted mb-5 leading-relaxed">
+            All prices include GST. A confirmation email will be sent to {booking.email}.
+          </p>
+
+          {availabilityError && (
+            <div className="bg-red-50 border border-red-200 px-4 py-3 mb-4">
+              <p className="font-hind text-sm text-red-600">{availabilityError}</p>
+            </div>
+          )}
+
+          <div className="flex gap-3">
+            <button onClick={() => setStep(2)} className="btn-secondary flex-1">Back</button>
+            <button
+              onClick={handleCheckAvailabilityAndPay}
+              disabled={checking}
+              className="btn-primary flex-1 disabled:opacity-60"
+            >
+              {checking ? "Checking availability..." : `Confirm & Pay ₹${total.toLocaleString()}`}
+            </button>
+          </div>
+        </>
+      );
+    })()}
+  </div>
+  )}
       </div>
     </div>
   );

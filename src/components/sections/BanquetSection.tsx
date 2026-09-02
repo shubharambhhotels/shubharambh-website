@@ -25,16 +25,16 @@ export default function BanquetSection() {
           {/* Main image */}
           <div className="border border-stone-light overflow-hidden aspect-[4/5] relative">
             <Image
-              src="/images/banquet-hall.jpeg"
+              src="/images/banquet3.jpg"
               alt="Shubharambh Banquet Hall"
               fill
               className="object-cover"
             />
           </div>
           {/* Accent image — bottom right overlap */}
-          <div className="absolute -bottom-6 -right-6 w-2/5 border-4 border-ivory-dark overflow-hidden hidden lg:block aspect-square relative">
+          <div className="absolute -bottom-6 -right-6 w-3/5 border-4 border-ivory-dark overflow-hidden hidden lg:block aspect-square relative">
             <Image
-              src="/images/banquet-hall2.jpeg"
+              src="/images/banquet4.jpg"
               alt="Shubharambh Banquet Setup"
               fill
               className="object-cover"

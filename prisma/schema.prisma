@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -24,20 +25,19 @@ enum Role {
 }
 
 model Room {
-  id          String    @id @default(cuid())
-  name        String
-  slug        String    @unique
-  type        RoomType
+  id            String    @id @default(cuid())
+  name          String
+  slug          String    @unique
+  type          RoomType
   pricePerNight Int
-  maxOccupancy Int
-  sizeSqFt    Int?
-  description String?
-  amenities   String[]
-  images      String[]  // array of image paths
-  isActive    Boolean   @default(true)
-  bookings    Booking[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  maxOccupancy  Int
+  sizeSqFt      Int?
+  description   String?
+  amenities     String[]
+  images        String[]
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 enum RoomType {
@@ -48,23 +48,23 @@ enum RoomType {
 }
 
 model Booking {
-  id            String        @id @default(cuid())
-  bookingRef    String        @unique @default(cuid())
-  room          Room          @relation(fields: [roomId], references: [id])
-  roomId        String
-  guestName     String
-  guestEmail    String
-  guestPhone    String
-  checkIn       DateTime
-  checkOut      DateTime
-  numGuests     Int
-  totalAmount   Int           // in paise (INR × 100)
-  status        BookingStatus @default(PENDING)
-  paymentId     String?       // Razorpay payment ID
+  id              String        @id @default(cuid())
+  bookingRef      String        @unique @default(cuid())
+  roomId          String
+  roomName        String        @default("")
+  guestName       String
+  guestEmail      String
+  guestPhone      String
+  checkIn         DateTime
+  checkOut        DateTime
+  numGuests       Int
+  totalAmount     Int
+  status          BookingStatus @default(PENDING)
+  paymentId       String?
   razorpayOrderId String?
   specialRequests String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 enum BookingStatus {
@@ -75,13 +75,13 @@ enum BookingStatus {
 }
 
 model Enquiry {
-  id        String   @id @default(cuid())
-  name      String
-  email     String
-  phone     String
-  purpose   String
+  id         String    @id @default(cuid())
+  name       String
+  email      String
+  phone      String
+  purpose    String
   travelDate DateTime?
-  message   String
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
+  message    String
+  isRead     Boolean   @default(false)
+  createdAt  DateTime  @default(now())
 }

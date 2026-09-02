@@ -43,7 +43,6 @@ export default function CulturalSection() {
         <h2 className="font-playfair text-4xl text-ivory">
           The <em className="text-gold-light not-italic">Soul of Kumaon</em>
         </h2>
-        <div className="divider divider-center mt-4" style={{ backgroundColor: "var(--gold)" }} />
         <p className="font-hind text-ivory/60 max-w-lg mx-auto leading-relaxed mt-4">
           Centuries of culture, devotion, and artistry pulse through every festival, dance, and feast of this Himalayan land.
         </p>

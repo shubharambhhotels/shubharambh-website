@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ImagePlaceholder from "@/components/ui/ImagePlaceholder";
+import Image from "next/image";
 
 const categories = ["All", "Rooms", "Banquet", "Weddings", "Himalayas", "Culture", "Food"] as const;
 type Category = (typeof categories)[number];
@@ -13,21 +14,27 @@ const galleryItems: {
   span: "normal" | "wide" | "tall";
   image: string;
 }[] = [
-  { id: "g1", label: "Himalayan Dawn from Suite Balcony", category: "Himalayas", span: "wide", image: "/images/gallery/himalayan-dawn.jpg" },
-  { id: "g2", label: "Deluxe Room Interior", category: "Rooms", span: "normal", image: "/images/gallery/deluxe-room.jpg" },
-  { id: "g3", label: "Adi Kailash Peak", category: "Himalayas", span: "tall", image: "/images/gallery/adi-kailash.jpg" },
-  { id: "g4", label: "Wedding Mandap Setup", category: "Weddings", span: "normal", image: "/images/gallery/wedding-mandap.jpg" },
-  { id: "g5", label: "Banquet Hall — Full Capacity", category: "Banquet", span: "wide", image: "/images/gallery/banquet-full.jpg" },
-  { id: "g6", label: "Himalayan Suite Bathroom", category: "Rooms", span: "normal", image: "/images/gallery/suite-bath.jpg" },
-  { id: "g7", label: "Chholiya Dance Performance", category: "Culture", span: "normal", image: "/images/gallery/chholiya.jpg" },
-  { id: "g8", label: "Kumaoni Thali", category: "Food", span: "normal", image: "/images/gallery/thali.jpg" },
-  { id: "g9", label: "Panchachuli Peaks at Dusk", category: "Himalayas", span: "wide", image: "/images/gallery/panchachuli.jpg" },
-  { id: "g10", label: "Reception Floral Decor", category: "Weddings", span: "tall", image: "/images/gallery/reception.jpg" },
-  { id: "g11", label: "Family Room", category: "Rooms", span: "normal", image: "/images/gallery/family-room.jpg" },
-  { id: "g12", label: "Bal Mithai & Local Sweets", category: "Food", span: "normal", image: "/images/gallery/sweets.jpg" },
-  { id: "g13", label: "Kumaoni Holi Celebration", category: "Culture", span: "normal", image: "/images/gallery/holi.jpg" },
-  { id: "g14", label: "Banquet Stage Setup", category: "Banquet", span: "normal", image: "/images/gallery/banquet-stage.jpg" },
-  { id: "g15", label: "Pithoragarh Valley View", category: "Himalayas", span: "normal", image: "/images/gallery/valley.jpg" },
+  { id: "g1", label: "View from Suite Balcony", category: "Himalayas", span: "wide", image: "/images/balcony-view.jpg" },
+  { id: "g2", label: "Deluxe Room Interior", category: "Rooms", span: "normal", image: "/images/rooms/deluxe2.jpg" },
+  { id: "g3", label: "Adi Kailash Peak", category: "Himalayas", span: "tall", image: "/images/adi-kailash.jpeg" },
+  { id: "g4", label: "Wedding Mandap Setup", category: "Weddings", span: "normal", image: "/images/mandap2.jpg" },
+  { id: "g5", label: "Banquet Hall — Full Capacity", category: "Banquet", span: "wide", image: "/images/banquet3.jpg" },
+  { id: "g6", label: "Himalayan Suite Bathroom", category: "Rooms", span: "normal", image: "/images/rooms/shower.jpg" },
+  { id: "g7", label: "Chholiya Dance Performance", category: "Culture", span: "normal", image: "/images/cholia.jpg" },
+  { id: "g8", label: "Kumaoni Thali", category: "Food", span: "normal", image: "/images/thhali.jpg" },
+  { id: "g9", label: "Panchachuli Peaks at Dusk", category: "Himalayas", span: "wide", image: "/images/panchachuli.jpeg" },
+  { id: "g10", label: "Reception Floral Decor", category: "Weddings", span: "tall", image: "/images/banquet-hall.jpeg" },
+  { id: "g11", label: "Family Room", category: "Rooms", span: "normal", image: "/images/rooms/family-suite1.jpg" },
+  { id: "g12", label: "Bal Mithai & Local Sweets", category: "Food", span: "normal", image: "/images/bal-mithai.jpg" },
+  { id: "g13", label: "Kumaoni Holi Celebration", category: "Culture", span: "normal", image: "/images/holi.jpg" },
+  { id: "g14", label: "Banquet Stage Setup", category: "Banquet", span: "normal", image: "/images/banquet4.jpg" },
+  { id: "g15", label: "Pithoragarh Valley View", category: "Himalayas", span: "normal", image: "/images/view.jpg" },
+  { id: "g16", label: "Mahendi Decor", category: "Weddings", span: "normal", image: "/images/decor2.jpeg" },
+  { id: "g17", label: "Hiljatra Festival Rituals", category: "Culture", span: "normal", image: "/images/hiljatra.jpg" },
+  { id: "g18", label: "Jhora Dance Performance", category: "Culture", span: "normal", image: "/images/jhora.jpg" },
+  { id: "g19", label: "Phooldei Ritual Celebration", category: "Culture", span: "normal", image: "/images/phooldei.jpg" },
+  { id: "g20", label: "Banquet Hall — Decor", category: "Banquet", span: "wide", image: "/images/decor3.jpeg" },
+  { id: "g21", label: "Banquet Hall — Mandap", category: "Weddings", span: "normal", image: "/images/mandap2.jpg" },
 ];
 
 const spanClass: Record<string, string> = {
@@ -84,20 +91,12 @@ export default function GalleryPage() {
                 className={`relative overflow-hidden group cursor-pointer border border-stone-light ${spanClass[item.span]}`}
                 onClick={() => setLightbox(item.id)}
               >
-                <ImagePlaceholder
-                  label={item.label}
-                  className="w-full h-full group-hover:scale-105 transition-transform duration-500"
-                  aspectRatio=""
+                <Image
+                  src={item.image}
+                  alt={item.label}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                {/*
-                  Replace ImagePlaceholder with:
-                  <Image
-                    src={item.image}
-                    alt={item.label}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                */}
                 <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/30 transition-colors duration-300 flex items-end">
                   <div className="p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                     <p className="font-playfair text-sm text-white">{item.label}</p>

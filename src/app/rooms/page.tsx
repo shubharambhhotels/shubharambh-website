@@ -41,6 +41,7 @@ const rooms = [
       "/images/rooms/super-deluxe2.jpg",
       "/images/rooms/amenities.jpg",
       "/images/rooms/amenities2.jpg",
+      "/images/rooms/balcony-view.jpg",
     ],
   },
   {
@@ -60,6 +61,7 @@ const rooms = [
       "/images/rooms/shower.jpg",
       "/images/rooms/amenities.jpg",
       "/images/rooms/amenities2.jpg",
+      "/images/rooms/balcony-view.jpg",
     ],
   },
   {
@@ -79,6 +81,7 @@ const rooms = [
       "/images/rooms/family-suite3.jpg",
       "/images/rooms/amenities.jpg",
       "/images/rooms/amenities2.jpg",
+      "/images/rooms/balcony-view.jpg",
     ],
   },
 ];

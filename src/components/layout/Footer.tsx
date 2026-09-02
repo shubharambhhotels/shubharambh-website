@@ -9,6 +9,7 @@ const footerLinks = {
     { href: "/gallery", label: "Gallery" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
+    { href: "/policy", label: "Hotel Policies" },
   ],
   destinations: [
     { href: "/experiences#adi-kailash", label: "Adi Kailash Yatra" },
@@ -134,11 +135,15 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Shubharambh Hotel & Banquet Hall, Pithoragarh. All rights reserved.
           </p>
           <div className="flex gap-5">
-            {["Privacy Policy", "Terms of Service", "Cancellation Policy"].map((item) => (
-              <Link key={item} href="#" className="text-[12px] text-charcoal-light hover:text-gold transition-colors">
-                {item}
+            {[
+              { label: "Hotel Policies", href: "/policy" },
+              { label: "Terms of Service", href: "/policy" },
+              { label: "Cancellation Policy", href: "/policy" },
+            ].map((item) => (
+              <Link key={item.label} href={item.href} className="text-[12px] text-charcoal-light hover:text-gold transition-colors">
+                {item.label}
               </Link>
-            ))}
+              ))}
           </div>
         </div>
       </div>
