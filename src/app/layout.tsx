@@ -20,7 +20,7 @@ const hind = Hind({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://shubharambhpithoragarh.com"),
+  metadataBase: new URL("https://shubharambhhotels.com"),
   title: {
     default: "Shubharambh Hotel & Banquet Hall — Pithoragarh, Uttarakhand",
     template: "%s | Shubharambh Hotel Pithoragarh",

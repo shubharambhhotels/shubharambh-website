@@ -47,7 +47,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone size={15} className="text-gold shrink-0" />
-                <span className="text-sm text-charcoal-light">9897580016</span>
+                <span className="text-sm text-charcoal-light">+91 9762622335</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail size={15} className="text-gold shrink-0" />
@@ -99,7 +99,7 @@ export default function Footer() {
             <div className="flex">
               <input
                 type="email"
-                placeholder="stay@shubharambhpithoragarh.com"
+                placeholder="shubharambh.banquet2026@gmail.com"
                 className="flex-1 bg-white/5 border border-white/10 px-3 py-2.5 text-sm text-white placeholder-charcoal-light outline-none focus:border-gold transition-colors"
               />
               <button className="bg-saffron px-4 py-2.5 text-white text-[11px] font-semibold tracking-widest uppercase hover:bg-saffron-light transition-colors">
@@ -145,6 +145,16 @@ export default function Footer() {
               </Link>
               ))}
           </div>
+          <p className="text-[12px] text-charcoal-light">
+            Designed by :{" "}
+            <a href="https://www.linkedin.com/in/vidhi-pandey-li04"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline"
+            >
+            Vidhi Pandey
+            </a>
+          </p>
         </div>
       </div>
     </footer>

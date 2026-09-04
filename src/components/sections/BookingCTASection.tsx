@@ -89,10 +89,10 @@ export default function BookingCTASection() {
               className="block w-full border-none outline-none px-4 pb-3 text-sm text-charcoal bg-transparent"
             >
               <option value="">Any Room</option>
-              <option value="deluxe">Mountain View Deluxe</option>
-              <option value="suite">Himalayan Suite</option>
-              <option value="family">Family Room</option>
-              <option value="super-deluxe">Super Deluxe</option>
+              <option>Deluxe Room</option>
+              <option>Super Deluxe Room</option>
+              <option>Executive Room</option>
+              <option>Family Suite</option>
             </select>
           </div>
           <button

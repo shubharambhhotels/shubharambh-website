@@ -13,7 +13,7 @@ const rooms = [
     occupancy: "1–2 Persons",
     badge: "Most Popular",
     badgeColor: "bg-saffron",
-    desc: "Spacious room with a private balcony overlooking the Himalayan ridgeline and Pithoragarh valley.",
+    desc: "Spacious room overlooking the Himalayan ridgeline and Pithoragarh valley.",
     amenities: ["Mountain View", "King Bed", "Free WiFi", "Hot Water", "Room Service"],
     image: "/images/rooms/deluxe2.jpg",
   },
@@ -46,7 +46,7 @@ const rooms = [
     name: "Family Suite",
     price: "—",
     priceDbl: "₹7,500",
-    occupancy: "2–4 Persons",
+    occupancy: "4 Persons",
     badge: "Best for Families",
     badgeColor: "bg-gold",
     desc: "Spacious suite with living area, AC, private balcony, and mountain-facing windows — ideal for families.",
@@ -162,9 +162,11 @@ export default function RoomsSection() {
   </p>
   <div className="flex flex-wrap items-center justify-center gap-4">
     {[
-      { name: "MakeMyTrip", color: "bg-[#E8F5E9] text-[#1a7a4a] border-[#1a7a4a]/20", href: "#" },
-      { name: "Goibibo", color: "bg-[#FFF3E0] text-[#e65c00] border-[#e65c00]/20", href: "#" },
-      { name: "Booking.com", color: "bg-[#E3F2FD] text-[#003580] border-[#003580]/20", href: "#" },
+      { name: "MakeMyTrip", color: "bg-[#E8F5E9] text-[#1a7a4a] border-[#1a7a4a]/20", href: "https://www.makemytrip.com/hotels/hotel-details/?hotelId=202601011826573569" },
+      { name: "Goibibo", color: "bg-[#FFF3E0] text-[#e65c00] border-[#e65c00]/20", href: "https://www.goibibo.com/hotels/hotel-details/?checkin=20260911&checkout=20260912&roomString=1-2-0&searchText=Nagarkoti%20Residency%20Inn&locusId=CTPGH&locusType=city&cityCode=CTPGH&cc=IN&_uCurrency=INR&vcid=6068171037273245672&giHotelId=4297801558748841121&mmtId=202601011826573569#location" },
+      { name: "Booking.com", color: "bg-[#E3F2FD] text-[#003580] border-[#003580]/20", href: "https://www.booking.com/hotel/in/nagarkoti-residency-inn" },
+      { name: "Agoda", color: "bg-[#F3E5F5] text-[#6A1B9A] border-[#6A1B9A]/20", href: "https://www.agoda.com/en-gb/nagarkoti-residency-inn/hotel/pithoragarh-in.html" },
+      { name: "TripAdvisor", color: "bg-[#E0F7FA] text-[#00796B] border-[#00796B]/20", href: "https://www.tripadvisor.in/Hotel_Review-g1209426-d34475846-Reviews-Nagarkoti_Residency_Inn-Pithoragarh_Pithoragarh_District_Uttarakhand" },
     ].map((ota) => (
       <a
         key={ota.name}
