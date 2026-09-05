@@ -85,3 +85,12 @@ model Enquiry {
   isRead     Boolean   @default(false)
   createdAt  DateTime  @default(now())
 }
+
+model RoomInventory {
+  id          String   @id @default(cuid())
+  roomNumber  String   @unique
+  category    String   // "deluxe", "super-deluxe", "executive", "family-suite"
+  floor       Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}

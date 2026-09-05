@@ -175,6 +175,16 @@ export default function AdminDashboard() {
   const toggleRoomStatus = (id: string) => {
     setRooms((prev) => prev.map((r) => r.id === id ? { ...r, status: r.status === "Active" ? "Inactive" : "Active" } : r));
   };
+
+// ── Manual Booking state
+  const [manualBookingOpen, setManualBookingOpen] = useState(false);
+  const [manualBooking, setManualBooking] = useState({
+    name: "", phone: "", email: "", room: "deluxe",
+    checkin: "", checkout: "", guests: "1",
+    amount: "", paymentMethod: "Cash", specialRequests: "",
+  });
+  const [manualBookingMsg, setManualBookingMsg] = useState("");
+  const [manualBookingLoading, setManualBookingLoading] = useState(false);
  
   // ── Booking actions
   const updateBookingStatus = (id: string, status: BookingStatus) => {
@@ -227,6 +237,39 @@ export default function AdminDashboard() {
     { id: "discounts", label: "Discounts", icon: <Tag size={16} /> },
     { id: "analytics", label: "Analytics", icon: <BarChart2 size={16} /> },
   ];
+
+  const handleManualBooking = async () => {
+    setManualBookingLoading(true);
+    setManualBookingMsg("");
+    try {
+      const res = await fetch("/api/bookings/manual", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          roomId: manualBooking.room,
+          checkin: manualBooking.checkin,
+          checkout: manualBooking.checkout,
+          guests: manualBooking.guests,
+          name: manualBooking.name,
+          email: manualBooking.email,
+          phone: manualBooking.phone,
+          amount: manualBooking.amount,
+          paymentMethod: manualBooking.paymentMethod,
+          specialRequests: manualBooking.specialRequests,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setManualBookingMsg(data.error ?? "Something went wrong.");
+      } else {
+        setManualBookingMsg(`Booking confirmed! Ref: ${data.bookingRef}`);
+        setManualBooking({ name: "", phone: "", email: "", room: "deluxe", checkin: "", checkout: "", guests: "1", amount: "", paymentMethod: "Cash", specialRequests: "" });
+      }
+    } catch {
+      setManualBookingMsg("Network error. Try again.");
+    }
+    setManualBookingLoading(false);
+  };
  
   return (
     <div className="flex h-screen bg-ivory overflow-hidden font-hind">
@@ -357,6 +400,12 @@ export default function AdminDashboard() {
             <div className="bg-white border border-stone-light">
               <div className="px-6 py-4 border-b border-stone-light flex flex-wrap items-center gap-3">
                 <h2 className="font-playfair text-lg text-charcoal mr-auto">All Bookings</h2>
+                <button
+                  onClick={() => setManualBookingOpen(true)}
+                  className="btn-primary flex items-center gap-2 text-sm py-2 px-4"
+                >
+                  <Plus size={14} /> Add Manual Booking
+                </button>
                 <input
                   type="text"
                   placeholder="Search guest or ref..."
@@ -664,6 +713,71 @@ export default function AdminDashboard() {
           )}
         </div>
       </div>
+
+      {/* ── Manual Booking Modal */}
+      {manualBookingOpen && (
+        <Modal title="Add Manual Booking" onClose={() => { setManualBookingOpen(false); setManualBookingMsg(""); }}>
+        <Field label="Guest Name *">
+          <input className={inputClass} value={manualBooking.name} onChange={(e) => setManualBooking({ ...manualBooking, name: e.target.value })} placeholder="Full name" />
+        </Field>
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Phone *">
+            <input className={inputClass} value={manualBooking.phone} onChange={(e) => setManualBooking({ ...manualBooking, phone: e.target.value })} placeholder="+91 XXXXX XXXXX" />
+          </Field>
+          <Field label="Email">
+            <input className={inputClass} value={manualBooking.email} onChange={(e) => setManualBooking({ ...manualBooking, email: e.target.value })} placeholder="guest@email.com" />
+          </Field>
+        </div>
+        <Field label="Room Category *">
+          <select className={inputClass} value={manualBooking.room} onChange={(e) => setManualBooking({ ...manualBooking, room: e.target.value })}>
+            <option value="deluxe">Deluxe Room</option>
+            <option value="super-deluxe">Super Deluxe Room</option>
+            <option value="executive">Executive Room</option>
+            <option value="family-suite">Family Suite</option>
+          </select>
+        </Field>
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Check In *">
+            <input type="date" className={inputClass} value={manualBooking.checkin} onChange={(e) => setManualBooking({ ...manualBooking, checkin: e.target.value })} />
+          </Field>
+          <Field label="Check Out *">
+            <input type="date" className={inputClass} value={manualBooking.checkout} onChange={(e) => setManualBooking({ ...manualBooking, checkout: e.target.value })} />
+          </Field>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Guests">
+            <select className={inputClass} value={manualBooking.guests} onChange={(e) => setManualBooking({ ...manualBooking, guests: e.target.value })}>
+              {["1","2","3","4","5"].map(g => <option key={g}>{g}</option>)}
+            </select>
+          </Field>
+          <Field label="Payment Method">
+            <select className={inputClass} value={manualBooking.paymentMethod} onChange={(e) => setManualBooking({ ...manualBooking, paymentMethod: e.target.value })}>
+              <option>Cash</option>
+              <option>UPI</option>
+              <option>Card</option>
+              <option>Bank Transfer</option>
+            </select>
+          </Field>
+        </div>
+        <Field label="Amount Received (₹)">
+          <input type="number" className={inputClass} value={manualBooking.amount} onChange={(e) => setManualBooking({ ...manualBooking, amount: e.target.value })} placeholder="e.g. 4000" />
+        </Field>
+        <Field label="Special Requests / Notes">
+          <textarea className={inputClass} rows={3} value={manualBooking.specialRequests} onChange={(e) => setManualBooking({ ...manualBooking, specialRequests: e.target.value })} />
+        </Field>
+        {manualBookingMsg && (
+          <p className={`font-hind text-sm px-3 py-2 mb-2 ${manualBookingMsg.includes("confirmed") ? "bg-forest/10 text-forest" : "bg-red-50 text-red-600"}`}>
+          {manualBookingMsg}
+          </p>
+        )}
+        <div className="flex gap-3 mt-4">
+          <button onClick={() => { setManualBookingOpen(false); setManualBookingMsg(""); }} className="btn-secondary flex-1 py-2.5">Cancel</button>
+          <button onClick={handleManualBooking} disabled={manualBookingLoading} className="btn-primary flex-1 py-2.5 flex items-center justify-center gap-2 disabled:opacity-60">
+          <Save size={14} /> {manualBookingLoading ? "Saving..." : "Confirm Booking"}
+          </button>
+        </div>
+      </Modal>
+      )}
  
       {/* ── Room Modal */}
       {roomModal.open && (
