@@ -29,13 +29,41 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Room not available for selected dates" }, { status: 409 });
     }
 
+    // Assign a room number from inventory
+    const bookedRooms = await prisma.booking.findMany({
+      where: {
+        roomId,
+        status: { in: ["PENDING", "CONFIRMED"] },
+        AND: [
+          { checkIn: { lt: checkOutDate } },
+          { checkOut: { gt: checkInDate } },
+        ],
+      },
+      select: { roomNumber: true },
+    });
+
+    const bookedNumbers = bookedRooms.map(b => b.roomNumber).filter(Boolean);
+
+    const assignedRoom = await prisma.roomInventory.findFirst({
+      where: {
+        category: roomId,
+        isActive: true,
+        roomNumber: { notIn: bookedNumbers as string[] },
+      },
+      orderBy: { roomNumber: "asc" },
+    });
+
+    if (!assignedRoom) {
+      return NextResponse.json({ error: "No rooms available for selected dates" }, { status: 409 });
+    }
+
     const roomNames: Record<string, string> = {
       "deluxe": "Deluxe Room",
       "super-deluxe": "Super Deluxe Room",
       "executive": "Executive Room",
       "family-suite": "Family Suite",
-    };
-
+    }; 
+    
     const booking = await prisma.booking.create({
       data: {
         roomId,
@@ -46,13 +74,14 @@ export async function POST(req: NextRequest) {
         checkIn: checkInDate,
         checkOut: checkOutDate,
         numGuests: parseInt(guests) || 1,
+        roomNumber: assignedRoom.roomNumber,
         totalAmount: parseInt(amount) || 0,
         status: "CONFIRMED",
         specialRequests: `Payment: ${paymentMethod}. ${specialRequests || ""}`.trim(),
       },
     });
 
-    return NextResponse.json({ success: true, bookingRef: booking.bookingRef });
+    return NextResponse.json({ success: true, bookingRef: booking.bookingRef,roomNumber: assignedRoom.roomNumber, });
   } catch (err) {
     console.error("Manual booking error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

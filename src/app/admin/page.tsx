@@ -262,7 +262,7 @@ export default function AdminDashboard() {
       if (!res.ok) {
         setManualBookingMsg(data.error ?? "Something went wrong.");
       } else {
-        setManualBookingMsg(`Booking confirmed! Ref: ${data.bookingRef}`);
+        setManualBookingMsg(`Booking confirmed! Ref: ${data.bookingRef} · Room ${data.roomNumber}`);
         setManualBooking({ name: "", phone: "", email: "", room: "deluxe", checkin: "", checkout: "", guests: "1", amount: "", paymentMethod: "Cash", specialRequests: "" });
       }
     } catch {
