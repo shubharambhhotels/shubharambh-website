@@ -1,12 +1,12 @@
 "use client";
- 
-import React,{ useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import {
   LayoutDashboard, BedDouble, Calendar, MessageSquare,
   BarChart2, Tag, LogOut, Menu, X, Plus, Pencil, Trash2,
   Check, ChevronDown, ChevronUp, Save,
 } from "lucide-react";
-import { signOut } from "next-auth/react"; 
+import { signOut } from "next-auth/react";
 
 // ─── Types ───────────────────────────────────────────────
 type BookingStatus = "Confirmed" | "Pending" | "Cancelled";
@@ -16,6 +16,7 @@ interface Booking {
   ref: string;
   guest: string;
   room: string;
+  roomNumber: string;
   checkin: string;
   checkout: string;
   amount: string;
@@ -57,13 +58,7 @@ interface Discount {
 }
  
 // ─── Initial Data ─────────────────────────────────────────
-const initBookings: Booking[] = [
-  { id: "1", ref: "BKG001", guest: "Rajesh Kumar", room: "Mountain View Deluxe", checkin: "2024-09-12", checkout: "2024-09-15", amount: "₹10,500", status: "Confirmed", phone: "+91 98100 00001", email: "rajesh@email.com" },
-  { id: "2", ref: "BKG002", guest: "Priya Mehta", room: "Himalayan Suite", checkin: "2024-09-18", checkout: "2024-09-22", amount: "₹26,000", status: "Pending", phone: "+91 98100 00002", email: "priya@email.com" },
-  { id: "3", ref: "BKG003", guest: "Ananya Singh", room: "Family Room", checkin: "2024-09-25", checkout: "2024-09-28", amount: "₹14,400", status: "Confirmed", phone: "+91 98100 00003", email: "ananya@email.com" },
-  { id: "4", ref: "BKG004", guest: "Vikram Joshi", room: "Super Deluxe", checkin: "2024-10-01", checkout: "2024-10-03", amount: "₹8,400", status: "Cancelled", phone: "+91 98100 00004", email: "vikram@email.com" },
-  { id: "5", ref: "BKG005", guest: "Sunita Rao", room: "Himalayan Suite", checkin: "2024-10-10", checkout: "2024-10-14", amount: "₹26,000", status: "Confirmed", phone: "+91 98100 00005", email: "sunita@email.com" },
-];
+const initBookings: Booking[] = [];
  
 const initRooms: Room[] = [
   { id: "1", name: "Deluxe Room", type: "Deluxe", price: 4000, occupancy: "2 Persons", status: "Active", amenities: "WiFi, Hot Water, Room Service, Smart TV, Safe/Locker" },
@@ -72,11 +67,7 @@ const initRooms: Room[] = [
   { id: "4", name: "Family Suite", type: "Suite", price: 7500, occupancy: "4 Persons", status: "Active", amenities: "WiFi, Hot Water, AC, Balcony, Living Area, Room Service, Smart TV, Safe/Locker" },
 ];
  
-const initEnquiries: Enquiry[] = [
-  { id: "1", name: "Deepak Sharma", purpose: "Spiritual Tour", date: "2024-10-05", message: "Looking for Adi Kailash yatra package for family of 4 in November.", phone: "+91 98200 00001", email: "deepak@email.com", read: false },
-  { id: "2", name: "Meena Gupta", purpose: "Wedding / Event", date: "2024-10-03", message: "Need pricing for 200-guest wedding in December 2024. Want full decoration and catering.", phone: "+91 98200 00002", email: "meena@email.com", read: false },
-  { id: "3", name: "Rahul Nair", purpose: "Hotel Stay", date: "2024-10-01", message: "Do you have room availability for Diwali week? Need 2 rooms for 4 nights.", phone: "+91 98200 00003", email: "rahul@email.com", read: true },
-];
+const initEnquiries: Enquiry[] = [];
  
 const initDiscounts: Discount[] = [
   { id: "1", name: "Early Bird Offer", code: "EARLY20", type: "Percentage", value: 20, minNights: 2, active: true, expiry: "2024-12-31" },
@@ -152,6 +143,31 @@ export default function AdminDashboard() {
   const [expandedEnquiry, setExpandedEnquiry] = useState<string | null>(null);
   const [bookingFilter, setBookingFilter] = useState("All");
   const [bookingSearch, setBookingSearch] = useState("");
+
+  // Fetch real bookings from DB
+  useEffect(() => {
+    fetch("/api/admin/bookings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.bookings) {
+          const mapped = data.bookings.map((b: any) => ({
+            id: b.id,
+            ref: b.bookingRef,
+            guest: b.guestName,
+            room: b.roomName,
+            checkin: new Date(b.checkIn).toISOString().split("T")[0],
+            checkout: new Date(b.checkOut).toISOString().split("T")[0],
+            amount: "₹" + (b.totalAmount / 100).toLocaleString("en-IN"),
+            roomNumber: b.roomNumber ?? "—",
+            status: b.status as BookingStatus,
+            phone: b.guestPhone,
+            email: b.guestEmail,
+          }));
+          setBookings(mapped);
+        }
+      })
+      .catch(console.error);
+  }, []);
  
   // ── Room actions
   const openAddRoom = () => setRoomModal({ open: true, data: { ...emptyRoom } });
@@ -187,8 +203,20 @@ export default function AdminDashboard() {
   const [manualBookingLoading, setManualBookingLoading] = useState(false);
  
   // ── Booking actions
-  const updateBookingStatus = (id: string, status: BookingStatus) => {
-    setBookings((prev) => prev.map((b) => b.id === id ? { ...b, status } : b));
+  const updateBookingStatus = async (id: string, status: BookingStatus) => {
+    const prev = bookings;
+    setBookings((b) => b.map((x) => x.id === id ? { ...x, status } : x));
+    try {
+      const res = await fetch("/api/admin/bookings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status }),
+      });
+      if (!res.ok) throw new Error("Failed");
+    } catch {
+      setBookings(prev); // rollback on failure
+      alert("Failed to update booking status. Please try again.");
+    }
   };
  
   const filteredBookings = bookings.filter((b) => {
@@ -641,7 +669,8 @@ export default function AdminDashboard() {
                 <h3 className="font-playfair text-lg text-charcoal mb-1">Monthly Bookings</h3>
                 <p className="font-hind text-xs text-text-muted mb-5">Current year</p>
                 <div className="flex items-end gap-2 h-44">
-                  {[4, 7, 5, 9, 12, 10, 11, 14, 12, 9, 8, 15].map((v, i) => (
+                  {Array.from({ length: 12 }, (_, i) =>
+                  bookings.filter((b) => new Date(b.checkin).getMonth() === i).length).map((v, i) => (
                     <div key={i} className="flex-1 flex flex-col items-center gap-1">
                       <span className="font-hind text-[9px] text-text-muted">{v}</span>
                       <div className="w-full bg-saffron/80 rounded-t-sm transition-all" style={{ height: `${(v / 15) * 100}%` }} />
@@ -658,15 +687,16 @@ export default function AdminDashboard() {
                 <p className="font-hind text-xs text-text-muted mb-5">All time</p>
                 <div className="flex flex-col gap-4">
                   {rooms.map((r, i) => {
-                    const pcts = [33, 27, 22, 18];
+                    const count = bookings.filter((b) => b.room === r.name).length;
+                    const pct = bookings.length > 0 ? Math.round((count / bookings.length) * 100) : 0;
                     return (
                       <div key={r.id}>
                         <div className="flex justify-between mb-1">
                           <span className="font-hind text-xs text-charcoal-mid">{r.name}</span>
-                          <span className="font-hind text-xs text-text-muted">{pcts[i]}%</span>
+                          <span className="font-hind text-xs text-text-muted">{pct}%</span>
                         </div>
                         <div className="h-2 bg-stone-light w-full">
-                          <div className="h-2 bg-saffron transition-all" style={{ width: `${pcts[i]}%` }} />
+                          <div className="h-2 bg-saffron transition-all" style={{ width: `${pct}%` }} />
                         </div>
                       </div>
                     );
@@ -679,7 +709,7 @@ export default function AdminDashboard() {
                 <div className="flex flex-col gap-3">
                   {(["Confirmed", "Pending", "Cancelled"] as BookingStatus[]).map((s) => {
                     const count = bookings.filter((b) => b.status === s).length;
-                    const pct = Math.round((count / bookings.length) * 100);
+                    const pct = bookings.length > 0 ? Math.round((count / bookings.length) * 100) : 0;
                     return (
                       <div key={s} className="flex items-center gap-4">
                         <span className={`font-hind text-[10px] uppercase tracking-wide px-2 py-0.5 w-24 text-center ${statusStyle[s]}`}>{s}</span>
@@ -896,7 +926,11 @@ function BookingsTable({
               <tr  className="hover:bg-ivory transition-colors">
                 <td className="px-4 py-3 font-hind text-sm font-semibold text-charcoal">{b.ref}</td>
                 <td className="px-4 py-3 font-hind text-sm text-charcoal whitespace-nowrap">{b.guest}</td>
-                <td className="px-4 py-3 font-hind text-sm text-text-muted whitespace-nowrap">{b.room}</td>
+                <td className="px-4 py-3 font-hind text-sm text-text-muted whitespace-nowrap">
+                  {b.room}
+                  {b.roomNumber && b.roomNumber !== "—" && (
+                    <span className="ml-1.5 font-hind text-[10px] bg-forest/10 text-forest px-1.5 py-0.5">#{b.roomNumber}</span>)}
+                </td>
                 <td className="px-4 py-3 font-hind text-sm text-text-muted whitespace-nowrap">{b.checkin}</td>
                 <td className="px-4 py-3 font-hind text-sm text-text-muted whitespace-nowrap">{b.checkout}</td>
                 <td className="px-4 py-3 font-playfair text-base text-charcoal whitespace-nowrap">{b.amount}</td>

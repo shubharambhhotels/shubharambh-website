@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+const roomNames: Record<string, string> = {
+  "deluxe": "Deluxe Room",
+  "super-deluxe": "Super Deluxe Room",
+  "executive": "Executive Room",
+  "family-suite": "Family Suite",
+};
+
+const prices: Record<string, number> = {
+  "deluxe": 400000,
+  "super-deluxe": 450000,
+  "executive": 500000,
+  "family-suite": 750000,
+};
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -17,8 +31,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Check-out must be after check-in" }, { status: 400 });
     }
 
-    // Check availability — look for conflicting bookings
-    const conflict = await prisma.booking.findFirst({
+    // Find already booked room numbers for these dates
+    const bookedRooms = await prisma.booking.findMany({
       where: {
         roomId,
         status: { in: ["PENDING", "CONFIRMED"] },
@@ -27,28 +41,42 @@ export async function POST(req: NextRequest) {
           { checkOut: { gt: checkInDate } },
         ],
       },
+      select: { roomNumber: true },
     });
 
-    if (conflict) {
-      return NextResponse.json({ error: "Room not available for selected dates" }, { status: 409 });
+    const bookedNumbers = bookedRooms
+      .map((b) => b.roomNumber)
+      .filter(Boolean) as string[];
+
+    // Find available room from inventory
+    const assignedRoom = await prisma.roomInventory.findFirst({
+      where: {
+        category: roomId,
+        isActive: true,
+        roomNumber: { notIn: bookedNumbers },
+      },
+      orderBy: { roomNumber: "asc" },
+    });
+
+    if (!assignedRoom) {
+      return NextResponse.json(
+        { error: "No rooms available for selected dates. Please choose different dates or another room type." },
+        { status: 409 }
+      );
     }
 
-    // Room prices
-    const prices: Record<string, number> = {
-      "deluxe": 400000,
-      "super-deluxe": 450000,
-      "executive": 500000,
-      "family-suite": 750000,
-    };
-
-    const nights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
+    const nights = Math.ceil(
+      (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
     const pricePerNight = prices[roomId] ?? 400000;
     const totalAmount = pricePerNight * nights;
 
-    // Save booking as PENDING
+    // Save booking
     const booking = await prisma.booking.create({
       data: {
         roomId,
+        roomName: roomNames[roomId] ?? roomId,
+        roomNumber: assignedRoom.roomNumber,
         guestName: name,
         guestEmail: email,
         guestPhone: phone,
@@ -64,6 +92,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       bookingId: booking.id,
       bookingRef: booking.bookingRef,
+      roomNumber: assignedRoom.roomNumber,
       nights,
       totalAmount,
       available: true,
