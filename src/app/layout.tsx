@@ -61,6 +61,50 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${playfair.variable} ${hind.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Hotel",
+            "name": "Shubharambh Hotel & Banquet Hall",
+            "description": "Luxury hotel and banquet hall in Pithoragarh, Uttarakhand. Gateway to Adi Kailash and Kailash Mansarovar.",
+            "url": "https://shubharambhhotels.com",
+            "telephone": "+919762622335",
+            "email": "shubharambh.banquet2026@gmail.com",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Near Royal Cinema, Airport Line, Village Makholigaon",
+              "addressLocality": "Pithoragarh",
+              "addressRegion": "Uttarakhand",
+              "postalCode": "262501",
+              "addressCountry": "IN"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 29.589872885453975,
+              "longitude": 80.23610118077387
+            },
+            "image": "https://shubharambhhotels.com/images/shubharambh.jpeg",
+            "priceRange": "₹₹",
+            "checkinTime": "13:00",
+            "checkoutTime": "11:00",
+            "amenityFeature": [
+              { "@type": "LocationFeatureSpecification", "name": "Free WiFi", "value": true },
+              { "@type": "LocationFeatureSpecification", "name": "Parking", "value": true },
+              { "@type": "LocationFeatureSpecification", "name": "Restaurant", "value": true }
+            ],
+            "sameAs": [
+              "https://www.facebook.com/61586732260917/",
+              "https://www.instagram.com/shubharambhhall.in",
+              "https://youtube.com/@shubharambhhotels"
+            ]
+          })
+        }}
+      />
+    </head>
+  
       <body>
         <SessionProvider>
           <Navbar />
