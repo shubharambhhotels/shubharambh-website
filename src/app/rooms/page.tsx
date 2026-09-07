@@ -67,9 +67,9 @@ const rooms = [
   {
     id: "family-suite",
     name: "Family Suite",
-    price: "₹7,500",
+    price: "-",
     priceDbl: "₹7,500",
-    size: "Double Occupancy only",
+    size: "Family room for 4 persons",
     occupancy: "4 Persons",
     badge: "Best for Families",
     badgeColor: "bg-gold",
