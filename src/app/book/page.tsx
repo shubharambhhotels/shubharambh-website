@@ -5,6 +5,7 @@ import { Check } from "lucide-react";
 
 const steps = ["Select Dates", "Choose Room", "Guest Details", "Payment"] as const;
 type Step = 0 | 1 | 2 | 3;
+const [appliedDiscount, setAppliedDiscount] = useState<{ type: string; value: number } | null>(null);
 
 export default function BookPage() {
   const [step, setStep] = useState<Step>(0);
@@ -68,11 +69,6 @@ const handleCheckAvailabilityAndPay = async () => {
     setAvailabilityError("Network error. Please try again.");
     setChecking(false);
   }};
-  const discounts: Record<string, { type: "percent" | "flat"; value: number }> = {
-    "EARLY20": { type: "percent", value: 20 },
-    "STAY500": { type: "flat", value: 500 },
-    "DIWALI15": { type: "percent", value: 15 },
-  };
   return (
     <div className="min-h-screen bg-ivory">
       {/* Header */}
@@ -223,14 +219,9 @@ const handleCheckAvailabilityAndPay = async () => {
       const subtotal = (pricePerNight * nights) + extraPersonCharge;
 
       // Discount
-      const discounts: Record<string, { type: "percent" | "flat"; value: number }> = {
-        "EARLY20": { type: "percent", value: 20 },
-        "STAY500": { type: "flat", value: 500 },
-        "DIWALI15": { type: "percent", value: 15 },
-      };
-      const appliedDiscount = discounts[discountCode.toUpperCase()];
+      
       const discountAmount = appliedDiscount
-        ? appliedDiscount.type === "percent"
+        ? appliedDiscount.type === "Percentage"
           ? Math.round(subtotal * appliedDiscount.value / 100)
           : appliedDiscount.value
         : 0;
@@ -324,13 +315,24 @@ const handleCheckAvailabilityAndPay = async () => {
               />
               <button
                 type="button"
-                onClick={() => {
-                  const d = discounts[discountCode.toUpperCase()];
-                  if (d) {
-                    setDiscountMsg("Discount applied successfully.");
-                  } else {
-                    setDiscountMsg("Invalid code. Please try again.");
-                  }
+                onClick={async () => {
+                  if (!discountCode) return;
+                  try {
+                    const res = await fetch("/api/discounts/validate", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ code: discountCode }),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                      setDiscountMsg("Invalid or expired code.");
+                      setAppliedDiscount(null);
+                    } else {
+                      setDiscountMsg(`"${data.name}" applied — ${data.type === "Percentage" ? data.value + "% off" : "₹" + data.value + " off"}`);
+                      setAppliedDiscount(data);}
+                    } catch {
+                      setDiscountMsg("Could not validate code. Try again.");
+                    }
                 }}
                 className="btn-secondary px-5 py-2.5 text-sm"
               >

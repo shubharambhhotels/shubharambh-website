@@ -32,8 +32,22 @@ async function main() {
       create: room,
     });
   }
-
   console.log("Seeded 15 rooms successfully.");
+
+  const discountsData = [
+    { name: "Early Bird Offer", code: "EARLY20", type: "Percentage", value: 20, minNights: 2, active: true },
+    { name: "Long Stay Discount", code: "STAY500", type: "Flat", value: 500, minNights: 3, active: true },
+    { name: "Diwali Special", code: "DIWALI15", type: "Percentage", value: 15, minNights: 1, active: false },
+  ];
+
+  for (const d of discountsData) {
+    await prisma.discount.upsert({
+      where: { code: d.code },
+      update: {},
+      create: d,
+    });
+  }
+  console.log("Seeded discounts successfully.");
 }
 
 main()

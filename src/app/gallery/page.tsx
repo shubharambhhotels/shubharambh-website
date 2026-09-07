@@ -14,7 +14,7 @@ const galleryItems: {
   span: "normal" | "wide" | "tall";
   image: string;
 }[] = [
-  { id: "g1", label: "View from Suite Balcony", category: "Himalayas", span: "wide", image: "/images/balcony-view.jpg" },
+  { id: "g1", label: "View from Suite Balcony", category: "Himalayas", span: "wide", image: "/images/rooms/balcony-view.jpg" },
   { id: "g2", label: "Deluxe Room Interior", category: "Rooms", span: "normal", image: "/images/rooms/deluxe2.jpg" },
   { id: "g3", label: "Adi Kailash Peak", category: "Himalayas", span: "tall", image: "/images/adi-kailash.jpeg" },
   { id: "g4", label: "Wedding Mandap Setup", category: "Weddings", span: "normal", image: "/images/mandap2.jpg" },

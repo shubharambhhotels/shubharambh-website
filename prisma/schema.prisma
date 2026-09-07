@@ -95,3 +95,16 @@ model RoomInventory {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
 }
+
+model Discount {
+  id         String   @id @default(cuid())
+  name       String
+  code       String   @unique
+  type       String   // "Percentage" or "Flat"
+  value      Int
+  minNights  Int      @default(1)
+  active     Boolean  @default(true)
+  expiry     DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

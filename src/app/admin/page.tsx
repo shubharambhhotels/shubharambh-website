@@ -167,6 +167,42 @@ export default function AdminDashboard() {
         }
       })
       .catch(console.error);
+    fetch("/api/enquiries")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.enquiries) {
+          const mapped = data.enquiries.map((e: any) => ({
+            id: e.id,
+            name: e.name,
+            purpose: e.purpose,
+            date: new Date(e.createdAt).toISOString().split("T")[0],
+            message: e.message,
+            phone: e.phone,
+            email: e.email,
+            read: e.isRead,
+          }));
+          setEnquiries(mapped);
+        }
+      })
+      .catch(console.error);
+    fetch("/api/discounts")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.discounts) {
+          const mapped = data.discounts.map((d: any) => ({
+            id: d.id,
+            name: d.name,
+            code: d.code,
+            type: d.type as "Percentage" | "Flat",
+            value: d.value,
+            minNights: d.minNights,
+            active: d.active,
+            expiry: d.expiry ? new Date(d.expiry).toISOString().split("T")[0] : "",
+          }));
+          setDiscounts(mapped);
+        }
+      })
+      .catch(console.error);
   }, []);
  
   // ── Room actions
@@ -226,30 +262,73 @@ export default function AdminDashboard() {
   });
  
   // ── Enquiry actions
-  const markRead = (id: string) => setEnquiries((prev) => prev.map((e) => e.id === id ? { ...e, read: true } : e));
-  const deleteEnquiry = (id: string) => setEnquiries((prev) => prev.filter((e) => e.id !== id));
+  const markRead = async (id: string) => {
+    setEnquiries((prev) => prev.map((e) => e.id === id ? { ...e, read: true } : e));
+    await fetch("/api/enquiries", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, isRead: true }),
+    });
+  };
+
+  const deleteEnquiry = async (id: string) => {
+    setEnquiries((prev) => prev.filter((e) => e.id !== id));
+    await fetch("/api/enquiries", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+  };
  
   // ── Discount actions
   const openAddDiscount = () => setDiscountModal({ open: true, data: { ...emptyDiscount } });
   const openEditDiscount = (d: Discount) => setDiscountModal({ open: true, data: { ...d } });
   const closeDiscountModal = () => setDiscountModal({ open: false, data: { ...emptyDiscount } });
  
-  const saveDiscount = () => {
+  const saveDiscount = async () => {
     if (!discountModal.data.name || !discountModal.data.code) return;
-    if (discountModal.data.id) {
-      setDiscounts((prev) => prev.map((d) => d.id === discountModal.data.id ? { ...discountModal.data, id: discountModal.data.id! } : d));
-    } else {
-      setDiscounts((prev) => [...prev, { ...discountModal.data, id: Date.now().toString() }]);
+    try {
+      const method = discountModal.data.id ? "PATCH" : "POST";
+      const res = await fetch("/api/discounts", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(discountModal.data),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error ?? "Failed to save discount");
+        return;
+      }
+      if (discountModal.data.id) {
+        setDiscounts((prev) => prev.map((d) => d.id === discountModal.data.id ? { ...discountModal.data, id: discountModal.data.id! } : d));
+      } else {
+        setDiscounts((prev) => [...prev, { ...data.discount, expiry: data.discount.expiry ? new Date(data.discount.expiry).toISOString().split("T")[0] : "" }]);
+      }
+      closeDiscountModal();
+    } catch {
+      alert("Network error. Try again.");
     }
-    closeDiscountModal();
   };
  
-  const toggleDiscount = (id: string) => {
+  const toggleDiscount = async (id: string) => {
+    const discount = discounts.find((d) => d.id === id);
+    if (!discount) return;
     setDiscounts((prev) => prev.map((d) => d.id === id ? { ...d, active: !d.active } : d));
+    await fetch("/api/discounts", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, active: !discount.active }),
+    });
   };
  
-  const deleteDiscount = (id: string) => {
-    if (confirm("Delete this discount?")) setDiscounts((prev) => prev.filter((d) => d.id !== id));
+  const deleteDiscount = async (id: string) => {
+    if (!confirm("Delete this discount?")) return;
+    setDiscounts((prev) => prev.filter((d) => d.id !== id));
+    await fetch("/api/discounts", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
   };
  
   // ── Stats

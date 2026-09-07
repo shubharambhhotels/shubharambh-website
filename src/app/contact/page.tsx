@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import EnquiryForm from "./EnquiryForm";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -95,82 +96,10 @@ export default function ContactPage() {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Shubharambh Hotel & Banquet Hall — Pithoragarh"/>
-            </div>
           </div>
 
           {/* Enquiry form */}
-          <div className="bg-white border border-stone-light p-8">
-            <h3 className="font-playfair text-xl text-charcoal mb-6">Send an Enquiry</h3>
-            <form className="flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-hind text-[10px] font-semibold uppercase tracking-widest text-text-muted mb-1.5">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Your name"
-                    className="w-full border border-stone bg-ivory px-3 py-2.5 text-sm text-charcoal outline-none focus:border-saffron transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="block font-hind text-[10px] font-semibold uppercase tracking-widest text-text-muted mb-1.5">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    placeholder="+91 XXXXX XXXXX"
-                    className="w-full border border-stone bg-ivory px-3 py-2.5 text-sm text-charcoal outline-none focus:border-saffron transition-colors"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block font-hind text-[10px] font-semibold uppercase tracking-widest text-text-muted mb-1.5">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="w-full border border-stone bg-ivory px-3 py-2.5 text-sm text-charcoal outline-none focus:border-saffron transition-colors"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-hind text-[10px] font-semibold uppercase tracking-widest text-text-muted mb-1.5">
-                    Purpose
-                  </label>
-                  <select className="w-full border border-stone bg-ivory px-3 py-2.5 text-sm text-charcoal outline-none focus:border-saffron transition-colors">
-                    <option>Hotel Stay</option>
-                    <option>Spiritual Tour</option>
-                    <option>Wedding / Event</option>
-                    <option>Adventure Trek</option>
-                    <option>Corporate Event</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block font-hind text-[10px] font-semibold uppercase tracking-widest text-text-muted mb-1.5">
-                    Travel Date
-                  </label>
-                  <input
-                    type="date"
-                    className="w-full border border-stone bg-ivory px-3 py-2.5 text-sm text-charcoal outline-none focus:border-saffron transition-colors"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block font-hind text-[10px] font-semibold uppercase tracking-widest text-text-muted mb-1.5">
-                  Message
-                </label>
-                <textarea
-                  rows={4}
-                  placeholder="Tell us about your plans, group size, or special requirements..."
-                  className="w-full border border-stone bg-ivory px-3 py-2.5 text-sm text-charcoal outline-none focus:border-saffron transition-colors resize-y"
-                />
-              </div>
-              <button type="submit" className="btn-primary w-full text-center mt-2">
-                Send Enquiry
-              </button>
-            </form>
+          <EnquiryForm />
           </div>
         </div>
       </SectionWrapper>
