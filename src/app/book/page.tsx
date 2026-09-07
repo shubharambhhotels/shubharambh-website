@@ -5,7 +5,6 @@ import { Check } from "lucide-react";
 
 const steps = ["Select Dates", "Choose Room", "Guest Details", "Payment"] as const;
 type Step = 0 | 1 | 2 | 3;
-const [appliedDiscount, setAppliedDiscount] = useState<{ type: string; value: number } | null>(null);
 
 export default function BookPage() {
   const [step, setStep] = useState<Step>(0);
@@ -21,6 +20,7 @@ export default function BookPage() {
   });
   const [discountCode, setDiscountCode] = useState("");
   const [discountMsg, setDiscountMsg] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState<{ type: string; value: number } | null>(null);
 
   const rooms = [
     { id: "deluxe", name: "Deluxe Room", price: 4000 },
