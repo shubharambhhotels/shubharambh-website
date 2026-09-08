@@ -28,9 +28,18 @@ export async function PATCH(req: Request) {
 
   try {
     const { id, status } = await req.json();
+
+    const statusMap: Record<string, "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED"> = {
+      Pending: "PENDING",
+      Confirmed: "CONFIRMED",
+      Cancelled: "CANCELLED",
+      Completed: "COMPLETED",
+    };
+    const mappedStatus = statusMap[status] ?? status;
+
     const booking = await prisma.booking.update({
       where: { id },
-      data: { status },
+      data: { status: mappedStatus },
     });
     return NextResponse.json({ booking });
   } catch (err) {
