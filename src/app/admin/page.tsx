@@ -203,6 +203,23 @@ export default function AdminDashboard() {
         }
       })
       .catch(console.error);
+    fetch("/api/rooms")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.rooms) {
+        const mapped = data.rooms.map((r: any) => ({
+          id: r.id,
+          name: r.name,
+          type: r.type,
+          price: r.pricePerNight,
+          occupancy: `${r.maxOccupancy} Persons`,
+          status: r.isActive ? "Active" : "Inactive",
+          amenities: r.amenities.join(", "),
+        }));
+        setRooms(mapped);
+      }
+    })
+    .catch(console.error);
   }, []);
  
   // ── Room actions
@@ -210,22 +227,67 @@ export default function AdminDashboard() {
   const openEditRoom = (r: Room) => setRoomModal({ open: true, data: { ...r } });
   const closeRoomModal = () => setRoomModal({ open: false, data: { ...emptyRoom } });
  
-  const saveRoom = () => {
+  const saveRoom = async () => {
     if (!roomModal.data.name || !roomModal.data.price) return;
-    if (roomModal.data.id) {
-      setRooms((prev) => prev.map((r) => (r.id === roomModal.data.id ? { ...roomModal.data, id: roomModal.data.id! } : r)));
-    } else {
-      setRooms((prev) => [...prev, { ...roomModal.data, id: Date.now().toString() }]);
+    try {
+      const method = roomModal.data.id ? "PATCH" : "POST";
+      const res = await fetch("/api/rooms", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: roomModal.data.id,
+          name: roomModal.data.name,
+          type: roomModal.data.type.toUpperCase().replace(" ", "_"),
+          pricePerNight: roomModal.data.price,
+          maxOccupancy: parseInt(roomModal.data.occupancy),
+          amenities: roomModal.data.amenities,
+          status: roomModal.data.status,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error ?? "Failed to save room");
+        return;
+      }
+      if (roomModal.data.id) {
+        setRooms((prev) => prev.map((r) => r.id === roomModal.data.id ? { ...roomModal.data, id: roomModal.data.id! } : r));
+      } else {
+        setRooms((prev) => [...prev, {
+          id: data.room.id,
+          name: data.room.name,
+          type: data.room.type,
+          price: data.room.pricePerNight,
+          occupancy: `${data.room.maxOccupancy} Persons`,
+          status: data.room.isActive ? "Active" : "Inactive",
+          amenities: data.room.amenities.join(", "),
+        }]);
+      }
+      closeRoomModal();
+    } catch {
+      alert("Network error. Try again.");
     }
-    closeRoomModal();
   };
  
-  const deleteRoom = (id: string) => {
-    if (confirm("Delete this room?")) setRooms((prev) => prev.filter((r) => r.id !== id));
+  const deleteRoom = async (id: string) => {
+    if (!confirm("Delete this room?")) return;
+    setRooms((prev) => prev.filter((r) => r.id !== id));
+    await fetch("/api/rooms", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
   };
  
-  const toggleRoomStatus = (id: string) => {
-    setRooms((prev) => prev.map((r) => r.id === id ? { ...r, status: r.status === "Active" ? "Inactive" : "Active" } : r));
+  const toggleRoomStatus = async (id: string) => {
+    const room = rooms.find((r) => r.id === id);
+    if (!room) return;
+    const newStatus = room.status === "Active" ? "Inactive" : "Active";
+    setRooms((prev) => prev.map((r) => r.id === id ? { ...r, status: newStatus } : r));
+    await fetch("/api/rooms", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, isActive: newStatus === "Active" }),
+    });
   };
 
 // ── Manual Booking state

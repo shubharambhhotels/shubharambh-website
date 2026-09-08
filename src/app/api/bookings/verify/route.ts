@@ -1,14 +1,12 @@
-// src/app/api/bookings/verify/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
-// import { prisma } from "@/lib/prisma";
-// import { sendBookingConfirmationEmail } from "@/lib/email";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await req.json();
 
-    // Verify Razorpay signature
+    // Verify signature
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
@@ -19,16 +17,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
     }
 
-    // Update booking status in DB
-    // await prisma.booking.update({
-    //   where: { razorpayOrderId: razorpay_order_id },
-    //   data: { status: "CONFIRMED", paymentId: razorpay_payment_id },
-    // });
+    // Update booking to CONFIRMED
+    const booking = await prisma.booking.findFirst({
+      where: { razorpayOrderId: razorpay_order_id },
+    });
 
-    // Send confirmation email
-    // await sendBookingConfirmationEmail(booking);
+    if (!booking) {
+      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+    }
 
-    return NextResponse.json({ success: true });
+    const updatedBooking = await prisma.booking.update({
+      where: { id: booking.id },
+      data: {
+        status: "CONFIRMED",
+        paymentId: razorpay_payment_id,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      bookingRef: updatedBooking.bookingRef,
+      roomNumber: updatedBooking.roomNumber,
+      checkin: updatedBooking.checkIn,
+      checkout: updatedBooking.checkOut,
+      room: updatedBooking.roomName,
+    });
+
   } catch (err) {
     console.error("Verify error:", err);
     return NextResponse.json({ error: "Verification failed" }, { status: 500 });
