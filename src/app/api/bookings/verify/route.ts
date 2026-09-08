@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
+import { sendBookingConfirmationEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,30 +18,47 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
     }
 
-    // Update booking to CONFIRMED
-    const booking = await prisma.booking.findFirst({
+    // Find booking by Razorpay order ID
+    const existing = await prisma.booking.findFirst({
       where: { razorpayOrderId: razorpay_order_id },
     });
 
-    if (!booking) {
+    if (!existing) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
-    const updatedBooking = await prisma.booking.update({
-      where: { id: booking.id },
+    // Update booking to CONFIRMED
+    const booking = await prisma.booking.update({
+      where: { id: existing.id },
       data: {
         status: "CONFIRMED",
         paymentId: razorpay_payment_id,
       },
     });
 
+    // Send confirmation email
+    try {
+      await sendBookingConfirmationEmail({
+        guestName: booking.guestName,
+        guestEmail: booking.guestEmail,
+        bookingRef: booking.bookingRef,
+        roomName: booking.roomName,
+        checkIn: booking.checkIn.toLocaleDateString("en-IN"),
+        checkOut: booking.checkOut.toLocaleDateString("en-IN"),
+        nights: Math.ceil((booking.checkOut.getTime() - booking.checkIn.getTime()) / (1000 * 60 * 60 * 24)),
+        totalAmount: booking.totalAmount,
+      });
+    } catch (emailErr) {
+      console.error("Email send failed:", emailErr);
+    }
+
     return NextResponse.json({
       success: true,
-      bookingRef: updatedBooking.bookingRef,
-      roomNumber: updatedBooking.roomNumber,
-      checkin: updatedBooking.checkIn,
-      checkout: updatedBooking.checkOut,
-      room: updatedBooking.roomName,
+      bookingRef: booking.bookingRef,
+      roomNumber: booking.roomNumber,
+      checkin: booking.checkIn,
+      checkout: booking.checkOut,
+      room: booking.roomName,
     });
 
   } catch (err) {

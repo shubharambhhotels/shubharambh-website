@@ -56,7 +56,7 @@ export async function sendBookingConfirmationEmail(data: BookingEmailData) {
           <tr><td style="padding:10px 16px;color:#7A6E65;font-weight:600;">Total</td><td style="padding:10px 16px;color:#A44A1E;font-size:18px;font-family:'Playfair Display',serif;font-weight:700;">${formattedAmount}</td></tr>
         </table>
         <p style="color:#3A3530;line-height:1.7;">
-          For assistance, WhatsApp us at <strong>+91 98765 43210</strong> or reply to this email.
+          For assistance, WhatsApp us at <strong>+91 97626 22335</strong> or reply to this email.
         </p>
         <p style="color:#7A6E65;font-size:12px;margin-top:32px;">
           Shubharambh Hotel & Banquet Hall &middot; Pithoragarh, Uttarakhand 262501
