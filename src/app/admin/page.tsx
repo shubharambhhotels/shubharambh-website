@@ -400,9 +400,9 @@ export default function AdminDashboard() {
  
   const navItems = [
     { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={16} /> },
-    { id: "bookings", label: "Bookings", icon: <Calendar size={16} />, badge: pending },
+    { id: "bookings", label: "Bookings", icon: <Calendar size={16} /> },
     { id: "rooms", label: "Rooms", icon: <BedDouble size={16} /> },
-    { id: "enquiries", label: "Enquiries", icon: <MessageSquare size={16} />, badge: unread },
+    { id: "enquiries", label: "Enquiries", icon: <MessageSquare size={16} /> },
     { id: "discounts", label: "Discounts", icon: <Tag size={16} /> },
     { id: "analytics", label: "Analytics", icon: <BarChart2 size={16} /> },
   ];
@@ -468,11 +468,6 @@ export default function AdminDashboard() {
             >
               <span className="shrink-0">{item.icon}</span>
               {sidebarOpen && <span className="tracking-wide">{item.label}</span>}
-              {item.badge && item.badge > 0 && (
-                <span className="ml-auto bg-saffron text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shrink-0">
-                  {item.badge}
-                </span>
-              )}
             </button>
           ))}
         </nav>
