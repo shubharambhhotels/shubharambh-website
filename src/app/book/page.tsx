@@ -76,7 +76,7 @@ export default function BookPage() {
           email: booking.email,
           phone: booking.phone,
           specialRequests: booking.specialRequests,
-          totalAmount: bill ? bill.total * 100 : 0, // in paise
+          discountCode: discountCode || "", 
         }),
       });
 

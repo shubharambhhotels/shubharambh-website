@@ -18,7 +18,7 @@ export default function ConfirmationActions({
     const content = `
 SHUBHARAMBH HOTEL & BANQUET HALL
 Near Naini-Saini Airport, Pithoragarh, Uttarakhand - 262501
-Phone: +91 9897580016
+Phone: +91 9762622335
 Email: shubharambh.banquet2026@gmail.com
 ${"─".repeat(50)}
 
@@ -56,7 +56,7 @@ We look forward to welcoming you to Pithoragarh.
         Download Invoice
       </button>
           
-        <a href="https://wa.me/919897580016"
+        <a href="https://wa.me/9762622335"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center justify-center gap-2 bg-[#25D366] text-white px-6 py-3.5 font-hind font-semibold text-sm tracking-wide hover:bg-[#1da851] transition-colors w-full"

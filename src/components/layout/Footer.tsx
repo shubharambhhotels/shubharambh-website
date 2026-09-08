@@ -146,7 +146,7 @@ export default function Footer() {
               ))}
           </div>
           <p className="text-[12px] text-charcoal-light">
-            Designed by :{" "}
+            Developed by :{" "}
             <a href="https://www.linkedin.com/in/vidhi-pandey-li04"
             target="_blank"
             rel="noopener noreferrer"
