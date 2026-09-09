@@ -115,6 +115,7 @@ export default function BookPage() {
           });
 
           const verifyData = await verifyRes.json();
+          console.log("Verify response:", verifyData);
 
           if (verifyRes.ok && verifyData.success) {
             window.location.href = `/book/confirmation?ref=${verifyData.bookingRef}&room=${encodeURIComponent(selectedRoom?.name ?? "")}&checkin=${booking.checkin}&checkout=${booking.checkout}&nights=${bill?.nights}&amount=${bill?.total}`;
