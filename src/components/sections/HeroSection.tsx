@@ -86,6 +86,7 @@ export default function HeroSection() {
             </label>
             <input
               type="date"
+              min={new Date().toISOString().split("T")[0]}
               className="w-full font-hind text-sm text-charcoal bg-transparent outline-none"
             />
           </div>
@@ -95,6 +96,7 @@ export default function HeroSection() {
             </label>
             <input
               type="date"
+              min={new Date().toISOString().split("T")[0]}
               className="w-full font-hind text-sm text-charcoal bg-transparent outline-none"
             />
           </div>

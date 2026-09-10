@@ -47,6 +47,7 @@ export default function BookingCTASection() {
             </label>
             <input
               type="date"
+               min={new Date().toISOString().split("T")[0]}
               value={form.checkin}
               onChange={(e) => setForm({ ...form, checkin: e.target.value })}
               className="block w-full border-none outline-none px-4 pb-3 text-sm text-charcoal bg-transparent"
@@ -58,6 +59,7 @@ export default function BookingCTASection() {
             </label>
             <input
               type="date"
+              min={form.checkin || new Date().toISOString().split("T")[0]}
               value={form.checkout}
               onChange={(e) => setForm({ ...form, checkout: e.target.value })}
               className="block w-full border-none outline-none px-4 pb-3 text-sm text-charcoal bg-transparent"

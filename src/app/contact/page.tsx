@@ -97,11 +97,11 @@ export default function ContactPage() {
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Shubharambh Hotel & Banquet Hall — Pithoragarh"/>
           </div>
+        </div>
 
           {/* Enquiry form */}
           <EnquiryForm />
-          </div>
-        </div>
+      </div>
       </SectionWrapper>
     </>
   );

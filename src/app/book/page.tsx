@@ -183,11 +183,11 @@ export default function BookPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
                 <div>
                   <label className="block font-hind text-[10px] font-semibold uppercase tracking-widest text-text-muted mb-1.5">Check In</label>
-                  <input type="date" value={booking.checkin} onChange={(e) => setBooking({ ...booking, checkin: e.target.value })} className="w-full border border-stone bg-ivory px-3 py-2.5 text-sm text-charcoal outline-none focus:border-saffron transition-colors" />
+                  <input type="date" min={new Date().toISOString().split("T")[0]} value={booking.checkin} onChange={(e) => setBooking({ ...booking, checkin: e.target.value })} className="w-full border border-stone bg-ivory px-3 py-2.5 text-sm text-charcoal outline-none focus:border-saffron transition-colors" />
                 </div>
                 <div>
                   <label className="block font-hind text-[10px] font-semibold uppercase tracking-widest text-text-muted mb-1.5">Check Out</label>
-                  <input type="date" value={booking.checkout} onChange={(e) => setBooking({ ...booking, checkout: e.target.value })} className="w-full border border-stone bg-ivory px-3 py-2.5 text-sm text-charcoal outline-none focus:border-saffron transition-colors" />
+                  <input type="date" min={booking.checkin || new Date().toISOString().split("T")[0]} value={booking.checkout} onChange={(e) => setBooking({ ...booking, checkout: e.target.value })} className="w-full border border-stone bg-ivory px-3 py-2.5 text-sm text-charcoal outline-none focus:border-saffron transition-colors" />
                 </div>
               </div>
               <div className="mb-6">
