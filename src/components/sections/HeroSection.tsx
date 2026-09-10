@@ -1,10 +1,29 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { ArrowDown, MapPin } from "lucide-react";
 import Image from "next/image";
 
 export default function HeroSection() {
+  const router = useRouter();
+
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [guests, setGuests] = useState("1");
+  const [code, setCode] = useState("");
+
+  const handleBookNow = () => {
+    const params = new URLSearchParams();
+    if (checkIn) params.set("checkIn", checkIn);
+    if (checkOut) params.set("checkOut", checkOut);
+    if (guests) params.set("guests", guests);
+    if (code) params.set("code", code);
+
+    router.push(`/book${params.toString() ? `?${params.toString()}` : ""}`);
+  };
+
   return (
     <section
       id="hero"
@@ -87,6 +106,8 @@ export default function HeroSection() {
             <input
               type="date"
               min={new Date().toISOString().split("T")[0]}
+              value={checkIn}
+              onChange={(e) => setCheckIn(e.target.value)}
               className="w-full font-hind text-sm text-charcoal bg-transparent outline-none"
             />
           </div>
@@ -97,6 +118,8 @@ export default function HeroSection() {
             <input
               type="date"
               min={new Date().toISOString().split("T")[0]}
+              value={checkOut}
+              onChange={(e) => setCheckOut(e.target.value)}
               className="w-full font-hind text-sm text-charcoal bg-transparent outline-none"
             />
           </div>
@@ -104,12 +127,16 @@ export default function HeroSection() {
             <label className="block font-hind text-[9px] font-semibold tracking-[0.2em] uppercase text-text-muted mb-1">
               Guests
             </label>
-            <select className="w-full font-hind text-sm text-charcoal bg-transparent outline-none">
-              <option>1 Guest</option>
-              <option>2 Guests</option>
-              <option>3 Guests</option>
-              <option>4 Guests</option>
-              <option>5+ Guests</option>
+            <select
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+              className="w-full font-hind text-sm text-charcoal bg-transparent outline-none"
+            >
+              <option value="1">1 Guest</option>
+              <option value="2">2 Guests</option>
+              <option value="3">3 Guests</option>
+              <option value="4">4 Guests</option>
+              <option value="5+">5+ Guests</option>
             </select>
           </div>
           <div className="flex-1 border-b sm:border-b-0 sm:border-r border-stone-light px-5 py-3">
@@ -119,10 +146,16 @@ export default function HeroSection() {
             <input
               type="text"
               placeholder="Enter code"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
               className="w-full font-hind text-sm text-charcoal bg-transparent outline-none placeholder-stone"
             />
           </div>
-          <button className="bg-gold hover:bg-gold-light transition-colors text-white font-hind font-bold text-[12px] tracking-[0.15em] uppercase px-8 py-3 shrink-0">
+          <button
+            type="button"
+            onClick={handleBookNow}
+            className="bg-gold hover:bg-gold-light transition-colors text-white font-hind font-bold text-[12px] tracking-[0.15em] uppercase px-8 py-3 shrink-0"
+          >
             Book Now
           </button>
         </div>
